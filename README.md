@@ -19,32 +19,32 @@
         <p>
             <b>Creative Login Page:</b>
         </p>
-        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/beb2a136-f562-428d-821d-6696753cdd11" alt="Login Page GIF" title="Login Page GIF" />
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/beb2a136-f562-428d-821d-6696753cdd11" alt="Login Page GIF" title="Login Page GIF" width="80%" />
     </li>
     <li>
         <p>
             <b>Responsive Search Bar:</b>
         </p>
-        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/ce3922e4-04d6-4ed2-b84d-d521fde58094" alt="Search Bar GIF" title="Search Bar GIF" />
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/ce3922e4-04d6-4ed2-b84d-d521fde58094" alt="Search Bar GIF" title="Search Bar GIF" width="80%" />
     </li>
     <li>
         <p>
             <b>Theme Toggler:</b>
         </p>
-        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/a8867503-f19a-44b2-96aa-9b38687b0d0b" alt="Theme Toggler GIF" title="Theme Toggler GIF" />
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/a8867503-f19a-44b2-96aa-9b38687b0d0b" alt="Theme Toggler GIF" title="Theme Toggler GIF" width="80%" />
     </li>
     <li>
         <p>
             <b>Infinite Scroll:</b>
         </p>
-        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/3f7eafb4-097c-43c7-b0c1-868a3a9781bc" alt="Infinite Scroll GIF" title="Infinite Scroll GIF" />
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/3f7eafb4-097c-43c7-b0c1-868a3a9781bc" alt="Infinite Scroll GIF" title="Infinite Scroll GIF" width="80%" />
         <p>Focus on the scroll bar to see how new contents are loaded (fetched from Database), as user reaches to end of scroll.</p>
     </li>
     <li>
         <p>
             <b>Profile Page:</b>
         </p>
-        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/dc5f7f0a-d48d-4a28-aa6a-d80facc74482" alt="Profile Page" title="Profile Page" />
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/dc5f7f0a-d48d-4a28-aa6a-d80facc74482" alt="Profile Page" title="Profile Page" width="80%" />
     </li>
     <li>
         <b>Remember Me Option:</b>
