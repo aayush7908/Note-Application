@@ -25,7 +25,7 @@
         <p>
             <b>Responsive Search Bar:</b>
         </p>
-        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/ce3922e4-04d6-4ed2-b84d-d521fde58094" alt="Search Bar GIF" title="Search Bar GIF" width="80%" />
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/4803ba50-f368-4f3c-98cd-ce8aefb96e19" alt="Search Bar GIF" title="Search Bar GIF" width="80%" />
     </li>
     <li>
         <p>
