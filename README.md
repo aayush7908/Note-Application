@@ -17,7 +17,7 @@
 <ol>
     <li>
         <b>Creative Login Page:</b>
-        ![login](https://github.com/aayush7908/Note-Application/assets/116342742/beb2a136-f562-428d-821d-6696753cdd11)
+        <img src="https://github.com/aayush7908/Note-Application/assets/116342742/beb2a136-f562-428d-821d-6696753cdd11" />
     </li>
     <li>
         <b>Responsive Search Bar:</b>
