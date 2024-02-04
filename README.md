@@ -51,3 +51,46 @@
         <p>While logging in, if the user checks this option, he need not login again for net 30 days. He will be directly logged in.</p>
     </li>
 </ol>
+
+<h2>Installation</h2>
+<p>To clone the repository, open git bash in your desired directory and execute the below given command:<p>
+```
+git clone https://github.com/aayush7908/Note-Application.git
+```
+<p>After this, a new directory named `Note-Application` will be created within the current working directory.</p>
+<p>
+    Now, you need to create two .env files.
+    <ol>
+        <li>
+            Create first one in the directory `Note-Application` and place environment variable:
+            <ul>
+                <li>
+                    `REACT_APP_API_BASE_URL` and the value set to: `http://localhost:PORT/api/v1` where PORT must be replaced by the port number on which backend server is running.
+                </li>
+            </ul>
+        </li>
+        <li>
+            Create second one in the directory `Note-Application/backend` and place three environment variables:
+            <ul>
+                <li>
+                    `JWT_SECRET`: this will store the secret string for encrypting the passwords
+                </li>
+                <li>
+                    `MONGO_URI`: this will store the url on which mongodb database is running (along with the database name)
+                </li>
+                <li>
+                    `PORT`: this will store the port number on which your nodejs server will run
+                </li>
+            </ul>
+        </li>
+    </ol>
+</p>
+<p>Once the environment variables are created, you are ready to start the application.</p>
+<p>First of all, start the backend (nodejs) server by opening the terminal in the directory `Note-Application/backend` and executing the command:</p>
+```
+node index.js
+```
+<p>Then, start the frontend (reactjs) server by opening another terminal in the directory `Note-Application` and executing the command:</p>
+```
+npm start
+```
