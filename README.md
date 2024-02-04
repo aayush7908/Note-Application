@@ -13,20 +13,24 @@ This project helped me learn the fundamentals of:
 ## Features
  1. Creative Login Page:
     <br />
+    <br />
     <img src="https://github.com/aayush7908/Note-Application/assets/116342742/beb2a136-f562-428d-821d-6696753cdd11" alt="Login Page GIF" title="Login Page GIF" width="80%" />
     <br />
      
  3. Responsive Search Bar:
+    <br />
     <br />
     <img src="https://github.com/aayush7908/Note-Application/assets/116342742/4803ba50-f368-4f3c-98cd-ce8aefb96e19" alt="Search Bar GIF" title="Search Bar GIF" width="80%" />
     <br />
  
  4. Theme Toggler:
     <br />
+    <br />
     <img src="https://github.com/aayush7908/Note-Application/assets/116342742/a8867503-f19a-44b2-96aa-9b38687b0d0b" alt="Theme Toggler GIF" title="Theme Toggler GIF" width="80%" />
     <br />
  
  5. Infinite Scroll:
+    <br />
     <br />
     <img src="https://github.com/aayush7908/Note-Application/assets/116342742/3f7eafb4-097c-43c7-b0c1-868a3a9781bc" alt="Infinite Scroll GIF" title="Infinite Scroll GIF" width="80%" />
     <br />
@@ -34,10 +38,13 @@ This project helped me learn the fundamentals of:
  
  6. Profile Page:
     <br />
+    <br />
     <img src="https://github.com/aayush7908/Note-Application/assets/116342742/dc5f7f0a-d48d-4a28-aa6a-d80facc74482" alt="Profile Page" title="Profile Page" width="80%" />
     <br />
  
  7. Remember Me Option:
+    <br />
+    <br />
     While logging in, if the user checks this option, he need not login again for net 30 days. He will be directly logged in.
 
 ## Installation
