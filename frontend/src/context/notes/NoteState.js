@@ -33,7 +33,7 @@ const NoteState = (props) => {
         } else {
             console.log("Error: ", data.errors);
         }
-        setTimeout(() => { setFetchingNotes(false); }, 2000);
+        setFetchingNotes(false);
     };
 
     // Add a new note
