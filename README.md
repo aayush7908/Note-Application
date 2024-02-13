@@ -4,11 +4,11 @@
 This project is a simple Note Making Application created using MERN Stack. The main motive behind developing this project was to learn full-stack web application development using MERN Stack.
 
 This project helped me learn the fundamentals of: 
-    * React Hooks
-    * MongoDB Schema and Validations
-    * API Versioning
-    * Modular Design of a Project
-    * Cryptography(Single-Key and Two-Key)
+* React Hooks
+* MongoDB Schema and Validations
+* API Versioning
+* Modular Design of a Project
+* Cryptography(Single-Key and Two-Key)
 
 ## Features
     1. Creative Login Page:

@@ -11,6 +11,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', require('./routes/v1'));
 
-app.listen(process.env.PORT, () => {
-    console.log(`Listening on port: ${process.env.PORT}`);
-});
+if(process.env.PORT) {
+    app.listen(process.env.PORT, () => {
+        console.log(`Listening on port: ${process.env.PORT}`);
+    });
+}
+
+module.exports = app;
