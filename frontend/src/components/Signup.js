@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authContext from "../context/auth/authContext";
 import alertContext from "../context/alert/alertContext";
@@ -7,7 +7,7 @@ import themeContext from "../context/theme/themeContext";
 export default function Signup() {
     let navigate = useNavigate();
     const [userData, setUserData] = useState({ name: "", email: "", password: "", password2: "" });
-    const { signupUser } = useContext(authContext);
+    const { signupUser, isAuthenticated } = useContext(authContext);
     const { createAlert } = useContext(alertContext);
     const { themeColorPalette } = useContext(themeContext);
 
@@ -48,6 +48,12 @@ export default function Signup() {
             createAlert("danger", errors[0]);
         }
     };
+
+    useEffect(() => {
+        if(isAuthenticated) {
+            navigate("/");
+        }
+    }, [isAuthenticated]);
 
     return (
         <div className="col-md-8 offset-md-2 my-3 bg-spin">

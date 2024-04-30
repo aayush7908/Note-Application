@@ -59,6 +59,8 @@ const AuthState = (props) => {
     // Called by component: Login.js
 
     const loginUser = async (credentials) => {
+        setAuthencating(true);
+
         // API call
         const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
             method: "POST",
@@ -83,6 +85,8 @@ const AuthState = (props) => {
             console.log("Could not login: ", data.msg || data.errors);
         }
 
+        setAuthencating(false);
+
         // Return the values to the caller so that the caller can decide which ALERT message to show.
         return {
             success: data.success,
@@ -96,6 +100,8 @@ const AuthState = (props) => {
     // Called by component: Signup.js
 
     const signupUser = async (credentials) => {
+        setAuthencating(true);
+
         // API call
         const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/signup`, {
             method: "POST",
@@ -119,6 +125,8 @@ const AuthState = (props) => {
             // In case of failure, display errors
             console.log("Could not signup: ", data.msg || data.errors);
         }
+
+        setAuthencating(false);
         
         // Return the values to the caller so that the caller can decide which ALERT message to show.
         return {
@@ -135,6 +143,7 @@ const AuthState = (props) => {
     const logoutUser = () => {
         // Removing the token from local-storage
         localStorage.removeItem("token");
+        console.log();
 
         // Set the isAuthenticated state variable to `false` as an indication of successful LOGOUT
         setIsAuthenticated(false);

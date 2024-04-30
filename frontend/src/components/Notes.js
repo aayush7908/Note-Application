@@ -11,7 +11,7 @@ export default function Notes() {
     const [editNoteValue, setEditNoteValue] = useState({ title: "", description: "", tag: "" });
     const [addNoteValue, setAddNoteValue] = useState({ title: "", description: "", tag: "" });
     const [maximizedNoteValue, setMaximizedNoteValue] = useState({ title: "", description: "", tag: "" });
-    const { totalNotes, fetchingNotes, notes, getAllNotes, addNote, editNote } = useContext(noteContext);
+    const { totalNotes, fetchingNotes, notes, getAllNotes, addNote, editNote, searchText } = useContext(noteContext);
     const { createAlert } = useContext(alertContext);
     const { themeColorPalette } = useContext(themeContext);
     const refForEditNote = useRef(null);
@@ -154,15 +154,19 @@ export default function Notes() {
                 </div>
             </div>
 
-            <div className={`my-3 text-${themeColorPalette.contrastMode}`}>
+            <div className={`w-100 my-3 text-${themeColorPalette.contrastMode}`}>
                 <h3><i className="fa-solid fa-file-circle-plus mx-3 float-end option" title="Create new note" onClick={showAddNoteModal}></i></h3>
-                <h3>Your notes</h3>
+                <h3>{searchText ? `Search Results for "${searchText}":` : "Your Notes:"}</h3>
                 {
                     fetchingNotes ?
                         (<Spinner />) :
                         (notes.length === 0 ?
-                            (<h2 className="text-center text-danger">No notes to display</h2>) :
                             (
+                                <div className="text-center">
+                                    <img src="images/no-notes.webp" className="img-fluid" draggable="false" />
+                                    <h2 className="text-danger">No notes found !!!</h2>
+                                </div>
+                            ) : (
                                 <InfiniteScroll
                                     dataLength={notes.length}
                                     next={fetchMoreData}
