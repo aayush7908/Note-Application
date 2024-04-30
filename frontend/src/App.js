@@ -32,7 +32,7 @@ function App() {
     <>
       <Router>
         <Navbar divID={"body"} />
-        <div className="container my-5 h-100" id="body">
+        <div className="container my-5 h-100 w-100" id="body">
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/about" element={<About />} />

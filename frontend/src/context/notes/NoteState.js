@@ -174,13 +174,13 @@ const NoteState = (props) => {
         } else {
             console.log("Error: ", data.errors);
         }
-        setTimeout(() => { setFetchingNotes(false); }, 2000);
+        setFetchingNotes(false);
 
         return { errors: data.errors };
     };
 
     return (
-        <NoteContext.Provider value={{ fetchingNotes, totalNotes, notes, setNotes, getAllNotes, addNote, deleteNote, editNote, modifyForSearch }}>
+        <NoteContext.Provider value={{ fetchingNotes, totalNotes, notes, searchText, setNotes, getAllNotes, addNote, deleteNote, editNote, modifyForSearch }}>
             {props.children}
         </NoteContext.Provider>
     );

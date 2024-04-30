@@ -9,7 +9,7 @@ export default function Navbar() {
     const location = useLocation();
     let navigate = useNavigate();
     let isNavbarOpen = false;
-    const [ searchText, setSearchText ] = useState("");
+    const [searchText, setSearchText] = useState("");
     const { modifyForSearch } = useContext(noteContext);
     const { isAuthenticated, logoutUser } = useContext(authContext);
     const { themeColorPalette, toggleTheme } = useContext(themeContext);
@@ -17,6 +17,7 @@ export default function Navbar() {
 
     const handleLogout = () => {
         logoutUser();
+        noteContext.Provider.value = {};
         navigate("/");
     };
 
@@ -36,8 +37,7 @@ export default function Navbar() {
 
     const handleSearchBtn = async () => {
         const { errors } = await modifyForSearch(searchText);
-        if(errors) createAlert("danger", errors);
-        setSearchText("");
+        if (errors) createAlert("danger", errors);
     };
 
     const collapseNavbar = (event) => {
@@ -52,8 +52,8 @@ export default function Navbar() {
             }
         }
     };
-    
-    const searchFieldFocus = (event) => {
+
+    const searchFieldFocus = () => {
         document.getElementById("collapsibleSearchField").classList.remove("text-center");
         document.getElementById("collapsibleSearchField").classList.add("form-control");
         document.getElementById("collapsibleSearchField").value = searchText;
@@ -63,26 +63,19 @@ export default function Navbar() {
         document.getElementById("searchDiv").classList.add("w-100");
         document.getElementById("searchDiv").classList.add("justify-content-center");
         document.getElementById("searchBtn").classList.remove("d-none");
+    };
 
-        document.body.addEventListener("click", searchFieldBlur);
+    const searchFieldBlur = () => {
+        document.getElementById("collapsibleSearchField").classList.add("text-center");
+        document.getElementById("collapsibleSearchField").classList.remove("form-control");
+        document.getElementById("searchDiv").classList.remove("justify-content-center");
+        document.getElementById("searchDiv").classList.remove("w-100");
+        document.getElementById("searchDiv").classList.add("translate-middle-x");
+        document.getElementById("searchDiv").classList.add("position-absolute");
+        document.getElementById("searchDiv").classList.add("start-50");
+        document.getElementById("searchBtn").classList.add("d-none");
     };
-    
-    const searchFieldBlur = (event) => {
-        if(event.target.id !== "collapsibleSearchField") {
-            document.getElementById("collapsibleSearchField").classList.add("text-center");
-            document.getElementById("collapsibleSearchField").classList.remove("form-control");
-            document.getElementById("collapsibleSearchField").value = "";
-            document.getElementById("searchDiv").classList.remove("justify-content-center");
-            document.getElementById("searchDiv").classList.remove("w-100");
-            document.getElementById("searchDiv").classList.add("translate-middle-x");
-            document.getElementById("searchDiv").classList.add("position-absolute");
-            document.getElementById("searchDiv").classList.add("start-50");
-            document.getElementById("searchBtn").classList.add("d-none");
-    
-            document.body.removeEventListener("click", searchFieldBlur);
-        }
-    };
-    
+
     return (
         <nav className={`navbar fixed-top navbar-expand-lg navbar-${themeColorPalette.themeMode} bg-${themeColorPalette.themeMode} shadow-sm`}>
             <div className="container-fluid">
@@ -106,10 +99,22 @@ export default function Navbar() {
                             <Link className={`nav-link ${location.pathname === "/about" ? "active" : ""}`} to="/about">About</Link>
                         </li>
                     </ul>
-                    <div className="position-absolute start-50 translate-middle-x px-5 d-none d-lg-flex" id="searchDiv">
-                        <input type="search" className={`rounded-pill px-3 py-2 border-0 text-center text-${themeColorPalette.contrastMode}`} id="collapsibleSearchField" placeholder="Search" style={{ backgroundColor: themeColorPalette.backgroundColor }} value={searchText} onFocus={searchFieldFocus} onChange={handleOnChangeSearchText} />
-                        <button className="btn btn-secondary d-none ms-2 rounded-pill" id="searchBtn" onClick={handleSearchBtn}>Search</button>
-                    </div>
+                    {
+                        isAuthenticated && (
+                            <div className="position-absolute start-50 translate-middle-x px-5 d-none d-lg-flex" id="searchDiv" onFocus={() => { searchFieldFocus() }} onBlur={() => { setTimeout(searchFieldBlur, 500) }}>
+                                <input
+                                    type="text"
+                                    className={`rounded-pill px-3 py-2 border-0 text-center text-${themeColorPalette.contrastMode}`}
+                                    id="collapsibleSearchField"
+                                    placeholder="Search"
+                                    style={{ backgroundColor: themeColorPalette.backgroundColor }}
+                                    value={searchText}
+                                    onChange={handleOnChangeSearchText}
+                                />
+                                <button className="btn btn-secondary d-none ms-2 rounded-pill" type="button" id="searchBtn" onClick={handleSearchBtn}>Search</button>
+                            </div>
+                        )
+                    }
                     <div className="theme-toggle mx-2 d-none d-lg-block">
                         <i className={`fa-solid fa-sun text-light bg-dark p-2 rounded-circle theme ${themeColorPalette.themeMode === "light" ? "d-none" : ""}`} id="light" onClick={controlThemeVisibility} title="Switch to Light Mode"></i>
                         <i className={`fa-solid fa-moon bg-light p-2 rounded-circle theme ${themeColorPalette.themeMode === "dark" ? "d-none" : ""}`} id="dark" onClick={controlThemeVisibility} title="Enable Dark Mode"></i>
