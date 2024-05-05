@@ -9,15 +9,15 @@ import ThemeState from './context/theme/ThemeState';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <ThemeState>
+  // <React.StrictMode>
+  <ThemeState>
+    <NoteState>
       <AuthState>
-        <NoteState>
-          <AlertState>
-            <App />
-          </AlertState>
-        </NoteState>
+        <AlertState>
+          <App />
+        </AlertState>
       </AuthState>
-    </ThemeState>
-  </React.StrictMode>
+    </NoteState>
+  </ThemeState>
+  // </React.StrictMode>
 );
