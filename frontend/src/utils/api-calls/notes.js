@@ -28,7 +28,7 @@ const addNoteAPI = async (newNote) => {
             },
             body: JSON.stringify(newNote)
         });
-        response = response.json();
+        response = await response.json();
     } catch (err) {
         response = error(err);
     }
@@ -46,7 +46,7 @@ const editNoteAPI = async (noteID, updatedNote) => {
             },
             body: JSON.stringify(updatedNote)
         });
-        response = response.json();
+        response = await response.json();
     } catch (err) {
         response = error(err);
     }
@@ -80,7 +80,7 @@ const modifyForSearchAPI = async (pageSize, search) => {
                 "authToken": localStorage.token
             }
         });
-        response = response.json();
+        response = await response.json();
     } catch(err) {
         response = error(err);
     }

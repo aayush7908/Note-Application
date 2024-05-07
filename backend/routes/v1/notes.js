@@ -3,6 +3,7 @@ const { body, validationResult } = require('express-validator');
 const Note = require('../../models/Note');
 const User = require('../../models/User');
 const fetchuser = require('../../middleware/fetchuser');
+const { InternalServerError, ValidationError, NotFoundError, UnauthorizedAccessError, BadRequestError } = require('../../utils/error-handler/error');
 const defaultTag = "general";
 const defaultPageSize = 12;
 
@@ -16,33 +17,35 @@ router.get('/get-all-notes', fetchuser, async (req, res, next) => {
         let page = req.query.page;
         let pageSize = req.query.pageSize;
         let search = req.query.search;
-        if(page <= 0 || pageSize <= 0 || pageSize > 20) throw "Invalid page or pageSize received"
-        if(!page) {
+        if (page <= 0 || pageSize <= 0 || pageSize > 20) {
+            throw new BadRequestError();
+        }
+        if (!page) {
             page = 1;
-            if(!pageSize) pageSize = 0;
+            if (!pageSize) pageSize = 0;
         } else {
-            if(!pageSize) pageSize = defaultPageSize;
+            if (!pageSize) pageSize = defaultPageSize;
         }
 
         // Fetch all notes corresponding to that userID
         let notes = [];
         let totalNotesExist = -1;
-        if(search) {
+        if (search) {
             notes = await Note.find({ user: userID, $or: [{ title: { $regex: search, "$options": "i" } }, { description: { $regex: search, "$options": "i" } }, { tag: { $regex: search, "$options": "i" } }] })
-                                    .skip((page - 1) * pageSize)
-                                    .limit(pageSize)
-                                    .select("-user -__v");
-            if(page == 1) {
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .select("-user -__v");
+            if (page == 1) {
                 totalNotesExist = await Note.countDocuments({ user: userID, description: search });
             }
         } else {
             notes = await Note.find({ user: userID })
-                                    .skip((page - 1) * pageSize)
-                                    .limit(pageSize)
-                                    .select("-user -__v");
-            if(page == 1) {
+                .skip((page - 1) * pageSize)
+                .limit(pageSize)
+                .select("-user -__v");
+            if (page == 1) {
                 const { totalNotes } = await User.findById(userID)
-                                                    .select("-_id totalNotes");
+                    .select("-_id totalNotes");
                 totalNotesExist = totalNotes;
             }
         }
@@ -51,8 +54,7 @@ router.get('/get-all-notes', fetchuser, async (req, res, next) => {
 
         return res.json({ success: true, status: 200, totalNotes: totalNotesExist, notes: notes });
     } catch (error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: [['Internal Server Error']] });
+        next(error);
     }
 });
 
@@ -69,7 +71,7 @@ router.post('/create-note',
             // If title and description arenot valid, return errors
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.json({ success: false, status: 400, errors: errors });
+                throw new ValidationError();
             }
 
             // Fetch user-id from user object put in request object by 'fetchuser' middleware
@@ -84,16 +86,14 @@ router.post('/create-note',
                 tag: tag || defaultTag
             })
                 .then(async (note) => {
-                    await User.findByIdAndUpdate(userID, { $inc: {totalNotes: 1} });
+                    await User.findByIdAndUpdate(userID, { $inc: { totalNotes: 1 } });
                     return res.json({ success: true, status: 200, msg: 'Note saved successfully', note: note });
                 })
                 .catch((error) => {
-                    console.log(error);
-                    return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+                    throw new InternalServerError();
                 });
         } catch (error) {
-            console.log(error);
-            return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+            next(error);
         }
     });
 
@@ -108,12 +108,12 @@ router.patch('/update-note/:noteID', fetchuser, async (req, res, next) => {
         // Fetch note by noteID and if it doesnot exist, return error
         let note = await Note.findById(noteID);
         if (!note) {
-            return res.json({ success: false, status: 404, errors: ['Note not found'] });
+            throw new NotFoundError('Note Not Found');
         }
 
         // If user in Note and user-id from token doesnot match, return error
         if (note.user.toString() !== userID) {
-            return res.json({ success: false, status: 401, errors: ['Unauthorized access'] });
+            throw new UnauthorizedAccessError();
         } else {
             // Fetch title and description from request body
             const { title, description, tag } = req.body;
@@ -129,8 +129,7 @@ router.patch('/update-note/:noteID', fetchuser, async (req, res, next) => {
             return res.json({ success: true, status: 200, msg: 'Note updated successfully', note: note });
         }
     } catch (error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+        next(error);
     }
 });
 
@@ -145,23 +144,22 @@ router.delete('/delete-note/:noteID', fetchuser, async (req, res, next) => {
         // Fetch note by noteID and if it doesnot exist, return error
         let note = await Note.findById(noteID);
         if (!note) {
-            return res.json({ success: false, status: 404, errors: ['Note not found'] });
+            throw new NotFoundError('Note Not Found');
         }
 
         // If user in Note and user-id from token doesnot match, return error
         if (note.user.toString() !== userID) {
-            return res.json({ success: false, status: 401, errors: ['Unauthorized access'] });
+            throw new UnauthorizedAccessError();
         } else {
             // Delete the note using noteID
             Note.findByIdAndDelete(noteID)
                 .then(async () => {
-                    await User.findByIdAndUpdate(userID, { $inc: {totalNotes: -1} });
+                    await User.findByIdAndUpdate(userID, { $inc: { totalNotes: -1 } });
                 });
             return res.json({ success: true, status: 200, msg: 'Note deleted successfully' });
         }
     } catch (error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+        next(error);
     }
 });
 

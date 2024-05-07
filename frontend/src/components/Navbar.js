@@ -79,10 +79,10 @@ export default function Navbar() {
     return (
         <nav className={`navbar fixed-top navbar-expand-lg navbar-${themeColorPalette.themeMode} bg-${themeColorPalette.themeMode} shadow-sm`}>
             <div className="container-fluid">
-                <div className="d-flex align-items-center">
+                <Link className="navbar-brand ps-2" to="/">
                     <img src="images/logo.png" draggable="false" style={{ width: "50px" }} />
-                    <Link className="navbar-brand ps-2" to="/">iNotebook</Link>
-                </div>
+                    <span>iNotebook</span>
+                </Link>
                 <div className="btn-group">
                     <div className="theme-toggle mx-2 my-1 d-lg-none">
                         <i className={`fa-solid fa-sun text-light bg-dark p-2 rounded-circle theme ${themeColorPalette.themeMode === "light" ? "d-none" : ""}`} id="light" onClick={controlThemeVisibility} title="Switch to Light Mode"></i>
