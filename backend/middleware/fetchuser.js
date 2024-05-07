@@ -1,5 +1,6 @@
 const { request } = require('express');
 const jwt = require('jsonwebtoken');
+const { InternalServerError, UnauthorizedAccessError } = require('../utils/error-handler/error');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
@@ -12,7 +13,7 @@ const fetchuser = (req, res, next) => {
     // Fetch token from the request header and if it doesnot exist deny the access
     const token = req.header('authToken');
     if (!token) {
-        return res.json({ success: false, status: 401, errors: ['Unauthorized access'] });
+        throw new UnauthorizedAccessError();
     }
     
     try {
@@ -21,8 +22,7 @@ const fetchuser = (req, res, next) => {
         req.user = payload.user;
         next();
     } catch (error) {
-        console.log(error);
-        return res.json({ success: false, status: 401, errors: ['Unauthorized access'] });
+        next(error);
     }
 };
 

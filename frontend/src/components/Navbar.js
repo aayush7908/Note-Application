@@ -17,7 +17,7 @@ export default function Navbar() {
 
     const handleLogout = () => {
         logoutUser();
-        noteContext.Provider.value = {};
+        setSearchText("");
         navigate("/");
     };
 
@@ -79,7 +79,10 @@ export default function Navbar() {
     return (
         <nav className={`navbar fixed-top navbar-expand-lg navbar-${themeColorPalette.themeMode} bg-${themeColorPalette.themeMode} shadow-sm`}>
             <div className="container-fluid">
-                <Link className="navbar-brand" to="/">iNotebook</Link>
+                <Link className="navbar-brand ps-2" to="/">
+                    <img src="images/logo.png" draggable="false" style={{ width: "50px" }} />
+                    <span>iNotebook</span>
+                </Link>
                 <div className="btn-group">
                     <div className="theme-toggle mx-2 my-1 d-lg-none">
                         <i className={`fa-solid fa-sun text-light bg-dark p-2 rounded-circle theme ${themeColorPalette.themeMode === "light" ? "d-none" : ""}`} id="light" onClick={controlThemeVisibility} title="Switch to Light Mode"></i>
@@ -120,44 +123,48 @@ export default function Navbar() {
                         <i className={`fa-solid fa-moon bg-light p-2 rounded-circle theme ${themeColorPalette.themeMode === "dark" ? "d-none" : ""}`} id="dark" onClick={controlThemeVisibility} title="Enable Dark Mode"></i>
                     </div>
                     {
-                        isAuthenticated ?
-                            (<div className="d-flex">
-                                <div className="mx-2 mt-1 d-none d-lg-block">
-                                    <h3 data-bs-toggle="dropdown" aria-label="profile icon" aria-expanded="false" role="button"><i className={`fa-solid fa-circle-user text-${themeColorPalette.contrastMode} option navbar-profile-icon`}></i></h3>
-                                    <ul className={`dropdown-menu ${themeColorPalette.themeMode === "dark" ? "dropdown-menu-dark" : ""} dropdown-menu-end m-2 bg-${themeColorPalette.themeMode}`}>
-                                        <li><Link className="dropdown-item" to="/profile">Show Profile</Link></li>
-                                        <li><hr className="dropdown-divider" /></li>
-                                        <li><Link className="dropdown-item" to="/" onClick={handleLogout}>Logout <i className="fa-solid fa-arrow-right-from-bracket ms-2"></i></Link></li>
-                                    </ul>
+                        isAuthenticated ? (
+                            <>
+                                <div className="d-flex">
+                                    <div className="mx-2 mt-1 d-none d-lg-block">
+                                        <h3 data-bs-toggle="dropdown" aria-label="profile icon" aria-expanded="false" role="button"><i className={`fa-solid fa-circle-user text-${themeColorPalette.contrastMode} option navbar-profile-icon`}></i></h3>
+                                        <ul className={`dropdown-menu ${themeColorPalette.themeMode === "dark" ? "dropdown-menu-dark" : ""} dropdown-menu-end m-2 bg-${themeColorPalette.themeMode}`}>
+                                            <li><Link className="dropdown-item" to="/profile">Show Profile</Link></li>
+                                            <li><hr className="dropdown-divider" /></li>
+                                            <li><Link className="dropdown-item" to="/" onClick={handleLogout}>Logout <i className="fa-solid fa-arrow-right-from-bracket ms-2"></i></Link></li>
+                                        </ul>
+                                    </div>
+                                    <div className="d-lg-none">
+                                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                            <li className="nav-item">
+                                                <Link className={`nav-link ${location.pathname === "/profile" ? "active" : ""}`} to="/profile">Show Profile</Link>
+                                            </li>
+                                            <li className="nav-item">
+                                                <Link className="nav-link" to="/" onClick={handleLogout}>Logout <i className="fa-solid fa-arrow-right-from-bracket ms-2"></i></Link>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div className="d-lg-none">
                                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                         <li className="nav-item">
-                                            <Link className={`nav-link ${location.pathname === "/profile" ? "active" : ""}`} to="/profile">Show Profile</Link>
-                                        </li>
-                                        <li className="nav-item">
-                                            <Link className="nav-link" to="/" onClick={handleLogout}>Logout <i className="fa-solid fa-arrow-right-from-bracket ms-2"></i></Link>
+                                            <div className="input-group my-3">
+                                                <input type="text" className="form-control" placeholder="Search Notes" value={searchText} id="searchField" onChange={handleOnChangeSearchText} />
+                                                <span className="input-group-text" onClick={handleSearchBtn}>
+                                                    <i className="fa-solid fa-search"></i>
+                                                </span>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
-                            </div>) :
-                            (<div className="d-flex justify-content-center">
+                            </>
+                        ) : (
+                            <div className="d-flex justify-content-center">
                                 <Link className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"} mx-1`} id="login" to="/login">Login</Link>
                                 <Link className={`btn btn-${themeColorPalette.themeMode === "light" ? "danger" : "primary"} mx-1`} id="signup" to="/signup">Signup</Link>
-                            </div>)
+                            </div>
+                        )
                     }
-                    <div className="d-lg-none">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <div className="input-group my-3">
-                                    <input type="text" className="form-control" placeholder="Search Notes" value={searchText} id="searchField" onChange={handleOnChangeSearchText} />
-                                    <span className="input-group-text" onClick={handleSearchBtn}>
-                                        <i className="fa-solid fa-search"></i>
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </nav>

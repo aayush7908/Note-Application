@@ -40,7 +40,7 @@ export default function Profile() {
                             <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode}`}>{(new Date(user.date)).toDateString()}</li>
                         </ul>
                     </div>) :
-                    (<Spinner />)
+                    (<Spinner label={"Fetching User Profile"} />)
             }
         </div>
     );

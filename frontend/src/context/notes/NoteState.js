@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import NoteContext from "./noteContext";
+import { addNoteAPI, deleteNoteAPI, editNoteAPI, getAllNotesAPI, modifyForSearchAPI } from "../../utils/api-calls/notes";
 
 const NoteState = (props) => {
     const pageSize = 12;
@@ -12,16 +13,7 @@ const NoteState = (props) => {
     // Fetch all the notes
     const getAllNotes = async () => {
         // API call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/notes/get-all-notes?page=${currentPage + 1}&pageSize=${pageSize}&search=${searchText}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
-        });
-
-        // Convert response into json data
-        const data = await response.json();
+        const data = await getAllNotesAPI(currentPage, pageSize, searchText);
 
         // Check the response from server and do the following:
         // If success === true, set the state of notes to the notes array of response
@@ -30,8 +22,6 @@ const NoteState = (props) => {
             setNotes(notes.concat(data.notes));
             if(currentPage === 0) setTotalNotes(data.totalNotes);
             setCurrentPage(currentPage + 1);
-        } else {
-            console.log("Error: ", data.errors);
         }
         setFetchingNotes(false);
     };
@@ -46,24 +36,12 @@ const NoteState = (props) => {
         }
 
         // API Call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/notes/create-note`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            },
-            body: JSON.stringify(newNote)
-        });
-
-        // Convert response into json data
-        const data = await response.json();
+        const data = await addNoteAPI(newNote);
 
         // Check the response
         if (data.success) {
             setNotes(notes.concat(data.note));
             setTotalNotes(totalNotes + 1);
-        } else {
-            console.log("Error: ", data.errors);
         }
 
         return {
@@ -82,17 +60,7 @@ const NoteState = (props) => {
         }
 
         // API Call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/notes/update-note/${noteID}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            },
-            body: JSON.stringify(updatedNote)
-        });
-
-        // Convert response into json data
-        const data = await response.json();
+        const data = await editNoteAPI(noteID, updatedNote);
 
         // Check the response
         if (data.success) {
@@ -104,8 +72,6 @@ const NoteState = (props) => {
                 }
             }
             setNotes(notesAfterEdit);
-        } else {
-            console.log("Error: ", data.errors);
         }
 
         return {
@@ -117,16 +83,7 @@ const NoteState = (props) => {
     // Delete a note
     const deleteNote = async (noteID) => {
         // API Call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/notes/delete-note/${noteID}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
-        });
-
-        // Convert response into json data
-        const data = await response.json();
+        const data = await deleteNoteAPI(noteID);
 
         // Check the response
         if (data.success) {
@@ -135,8 +92,6 @@ const NoteState = (props) => {
             });
             setNotes(notesAfterDelete);
             setTotalNotes(totalNotes - 1);
-        } else {
-            console.log("Error: ", data.errors);
         }
 
         return {
@@ -154,16 +109,7 @@ const NoteState = (props) => {
         setFetchingNotes(true);
 
         // API call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/notes/get-all-notes?page=1&pageSize=${pageSize}&search=${search}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
-        });
-
-        // Convert response into json data
-        const data = await response.json();
+        const data = await modifyForSearchAPI(pageSize, search);
 
         // Check the response from server and do the following:
         // If success === true, set the state of notes to the notes array of response
@@ -171,16 +117,21 @@ const NoteState = (props) => {
         if (data.success) {
             setNotes(data.notes);
             setTotalNotes(data.totalNotes);
-        } else {
-            console.log("Error: ", data.errors);
         }
         setFetchingNotes(false);
 
         return { errors: data.errors };
     };
 
+    const resetValues = () => {
+        setNotes([]);
+        setCurrentPage(0);
+        setTotalNotes(0);
+        setSearchText("");
+    }
+
     return (
-        <NoteContext.Provider value={{ fetchingNotes, totalNotes, notes, searchText, setNotes, getAllNotes, addNote, deleteNote, editNote, modifyForSearch }}>
+        <NoteContext.Provider value={{ fetchingNotes, totalNotes, notes, searchText, setNotes, getAllNotes, addNote, deleteNote, editNote, modifyForSearch, resetValues }}>
             {props.children}
         </NoteContext.Provider>
     );

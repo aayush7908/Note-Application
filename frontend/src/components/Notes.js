@@ -11,6 +11,7 @@ export default function Notes() {
     const [editNoteValue, setEditNoteValue] = useState({ title: "", description: "", tag: "" });
     const [addNoteValue, setAddNoteValue] = useState({ title: "", description: "", tag: "" });
     const [maximizedNoteValue, setMaximizedNoteValue] = useState({ title: "", description: "", tag: "" });
+    const [saving, setSaving] = useState(false);
     const { totalNotes, fetchingNotes, notes, getAllNotes, addNote, editNote, searchText } = useContext(noteContext);
     const { createAlert } = useContext(alertContext);
     const { themeColorPalette } = useContext(themeContext);
@@ -27,17 +28,27 @@ export default function Notes() {
     };
 
     const handleEditBtn = async () => {
+        setSaving((saving) => { return true; });
         const { success, errors } = await editNote(editNoteValue._id, editNoteValue.title, editNoteValue.description, editNoteValue.tag);
-        if (success) createAlert("success", "Note Saved");
-        else createAlert("danger", errors[0]);
-        refForEditNote.current.click();
+        setSaving((saving) => { return false; });
+        if (success) {
+            createAlert("success", "Note Saved");
+            refForEditNote.current.click();
+        } else {
+            createAlert("danger", errors[0]);
+        }
     };
 
     const handleAddNoteBtn = async () => {
+        setSaving((saving) => { return true; });
         const { success, errors } = await addNote(addNoteValue.title, addNoteValue.description, addNoteValue.tag);
-        if (success) createAlert("success", "Note Added");
-        else createAlert("danger", errors[0]);
-        refForAddNote.current.click();
+        setSaving((saving) => { return false; });
+        if (success) {
+            createAlert("success", "Note Added");
+            refForAddNote.current.click();
+        } else {
+            createAlert("danger", errors[0]);
+        }
     };
 
     const showEditNoteModal = (currentNote) => {
@@ -63,6 +74,8 @@ export default function Notes() {
         else if (window.scrollY <= 200) setIsExtraAddNoteBtnVisible(false);
     };
 
+    // const showAllNotes = () => {}
+
     useEffect(() => {
         getAllNotes();
         window.addEventListener("scroll", handleExtraAddNoteBtnVisibility);
@@ -83,20 +96,24 @@ export default function Notes() {
                         <div className="modal-body">
                             <div className="mb-3">
                                 <label htmlFor="title" className="form-label">Title</label>
-                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="title" name="title" value={editNoteValue.title} onChange={onChangeOfEditNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} />
+                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="title" name="title" value={editNoteValue.title} onChange={onChangeOfEditNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} disabled={saving} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="description" className="form-label">Description</label>
-                                <textarea className={`form-control text-${themeColorPalette.contrastMode}`} id="description" rows="10" name="description" value={editNoteValue.description} onChange={onChangeOfEditNote} style={{ backgroundColor: themeColorPalette.backgroundColor }}></textarea>
+                                <textarea className={`form-control text-${themeColorPalette.contrastMode}`} id="description" rows="10" name="description" value={editNoteValue.description} onChange={onChangeOfEditNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} disabled={saving}></textarea>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="tag" className="form-label">Tag</label>
-                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="tag" name="tag" value={editNoteValue.tag} onChange={onChangeOfEditNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} maxLength={10} />
+                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="tag" name="tag" value={editNoteValue.tag} onChange={onChangeOfEditNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} maxLength={10} disabled={saving} />
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`} onClick={handleEditBtn} disabled={editNoteValue.title.length < 3 || editNoteValue.description.length < 5}>Save Note</button>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" disabled={saving}>Close</button>
+                            <button type="button" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`} onClick={handleEditBtn} disabled={editNoteValue.title.length < 3 || editNoteValue.description.length < 5 || saving}>
+                                {
+                                    saving ? "Saving..." : "Save Note"
+                                }
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -115,20 +132,24 @@ export default function Notes() {
                         <div className="modal-body">
                             <div className="mb-3">
                                 <label htmlFor="title" className="form-label">Title</label>
-                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="title" name="title" value={addNoteValue.title} onChange={onChangeOfAddNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} />
+                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="title" name="title" value={addNoteValue.title} onChange={onChangeOfAddNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} disabled={saving} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="description" className="form-label">Description</label>
-                                <textarea className={`form-control text-${themeColorPalette.contrastMode}`} id="description" rows="10" name="description" value={addNoteValue.description} onChange={onChangeOfAddNote} style={{ backgroundColor: themeColorPalette.backgroundColor }}></textarea>
+                                <textarea className={`form-control text-${themeColorPalette.contrastMode}`} id="description" rows="10" name="description" value={addNoteValue.description} onChange={onChangeOfAddNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} disabled={saving}></textarea>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="tag" className="form-label">Tag</label>
-                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="tag" name="tag" value={addNoteValue.tag} onChange={onChangeOfAddNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} maxLength={10} />
+                                <input type="text" className={`form-control text-${themeColorPalette.contrastMode}`} id="tag" name="tag" value={addNoteValue.tag} onChange={onChangeOfAddNote} style={{ backgroundColor: themeColorPalette.backgroundColor }} maxLength={10} disabled={saving} />
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`} onClick={handleAddNoteBtn} disabled={addNoteValue.title.length < 3 || addNoteValue.description.length < 5}>Add Note</button>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" disabled={saving}>Close</button>
+                            <button type="button" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`} onClick={handleAddNoteBtn} disabled={addNoteValue.title.length < 3 || addNoteValue.description.length < 5 || saving}>
+                                {
+                                    saving ? "Saving..." : "Add Note"
+                                }
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -147,7 +168,9 @@ export default function Notes() {
                         <div className="modal-body text-break p-5">
                             <div>
                                 <h3>{maximizedNoteValue.title}</h3>
-                                <p>{maximizedNoteValue.description}</p>
+                                <pre>
+                                    {maximizedNoteValue.description}
+                                </pre>
                             </div>
                         </div>
                     </div>
@@ -156,10 +179,19 @@ export default function Notes() {
 
             <div className={`w-100 my-3 text-${themeColorPalette.contrastMode}`}>
                 <h3><i className="fa-solid fa-file-circle-plus mx-3 float-end option" title="Create new note" onClick={showAddNoteModal}></i></h3>
-                <h3>{searchText ? `Search Results for "${searchText}":` : "Your Notes:"}</h3>
+                {
+                    searchText ? (
+                        <h3>
+                            Search Results for "{searchText}":
+                            {/* <i className="fa-solid fa-reply-all float-end option" title="Show All Notes" onClick={showAllNotes}></i> */}
+                        </h3>
+                    ) : (
+                        <h3>Your Notes:</h3>
+                    )
+                }
                 {
                     fetchingNotes ?
-                        (<Spinner />) :
+                        (<Spinner label={"Fetching Notes"} />) :
                         (notes.length === 0 ?
                             (
                                 <div className="text-center">
@@ -171,7 +203,7 @@ export default function Notes() {
                                     dataLength={notes.length}
                                     next={fetchMoreData}
                                     hasMore={totalNotes > notes.length}
-                                    loader={<Spinner />}
+                                    loader={<Spinner label={"Fetching More Notes"} />}
                                 >
                                     <div className="row w-100 my-3">
                                         {notes.map((element) => {

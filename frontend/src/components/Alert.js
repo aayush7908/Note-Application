@@ -7,7 +7,7 @@ export default function Alert() {
     return (
         <>
             {alert ? (
-                <div className={`alert alert-${alert.type} position-fixed bottom-0 end-0 m-3`} role="alert">
+                <div className={`alert alert-${alert.type} position-fixed bottom-0 end-0 m-3 ${alert ? "" : "d-none"}`} role="alert">
                     {alert.msg}
                 </div>
             ) :

@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AuthContext from "./authContext";
+import noteContext from "../notes/noteContext";
+import { authenticateUserAPI, getUserProfileAPI, loginUserAPI, signupUserAPI } from "../../utils/api-calls/auth";
 
 const AuthState = (props) => {
+
+    const { resetValues } = useContext(noteContext);
+
     // State variables ...
 
     // 1. For 'Remember Me' option shown while Login.
@@ -33,25 +38,31 @@ const AuthState = (props) => {
     // Called by component: App.js => (via 'useEffect' hook to fetch details of already logged-in user)
 
     const authenticateUser = async () => {
+        let data = {
+            success: true
+        }
+        
         if (localStorage.token) {
             // API Call
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/authenticate-user`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "authToken": localStorage.token
-                }
-            });
-
-            // Extract JSON data from server response
-            const data = await response.json();
+            data = await authenticateUserAPI();
 
             // Set the isAuthenticated state on basis of server response
             setIsAuthenticated(data.success);
+
+            // logout user if token is invalid
+            if(!data.success) {
+                logoutUser();
+            }
         }
 
         // Set the value of 'authenticating' state as an indication of completion of the authentication process
         setAuthencating(false);
+
+        // Return the values to the caller so that the caller can decide which ALERT message to show.
+        return {
+            success: data.success,
+            errors: data.errors
+        };
     };
 
 
@@ -62,16 +73,7 @@ const AuthState = (props) => {
         setAuthencating(true);
 
         // API call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(credentials)
-        });
-
-        // Extracting json data from server response
-        const data = await response.json();
+        const data = await loginUserAPI(credentials);
 
         // Set the isAuthenticated state on basis of server response
         setIsAuthenticated(data.success);
@@ -80,9 +82,6 @@ const AuthState = (props) => {
         if (data.success) {
             // Save the token in 'local-storage' on successful authentication
             localStorage.token = data.authToken;
-        } else {
-            // In case of failure, display errors
-            console.log("Could not login: ", data.msg || data.errors);
         }
 
         setAuthencating(false);
@@ -103,16 +102,7 @@ const AuthState = (props) => {
         setAuthencating(true);
 
         // API call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/signup`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(credentials)
-        });
-
-        // Extracting json data from server response
-        const data = await response.json();
+        const data = await signupUserAPI(credentials);
 
         // Set the isAuthenticated state on basis of server response
         setIsAuthenticated(data.success);
@@ -121,9 +111,6 @@ const AuthState = (props) => {
         if (data.success) {
             // Save the token in 'local-storage' on successful account creation
             localStorage.token = data.authToken;
-        } else {
-            // In case of failure, display errors
-            console.log("Could not signup: ", data.msg || data.errors);
         }
 
         setAuthencating(false);
@@ -143,10 +130,12 @@ const AuthState = (props) => {
     const logoutUser = () => {
         // Removing the token from local-storage
         localStorage.removeItem("token");
-        console.log();
 
         // Set the isAuthenticated state variable to `false` as an indication of successful LOGOUT
         setIsAuthenticated(false);
+
+        // reset note values
+        resetValues();
     };
 
 
@@ -156,16 +145,7 @@ const AuthState = (props) => {
 
     const getUserProfile = async () => {
         // API Call
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/get-user`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
-        });
-
-        // Extract JSON data from server response
-        const data = await response.json();
+        const data = await getUserProfileAPI();
 
         // Set user state to store the user-data received from server
         setUser(data.user);

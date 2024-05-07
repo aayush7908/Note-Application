@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../../models/User');
 const fetchuser = require('../../middleware/fetchuser');
+const { UnauthorizedAccessError, DuplicateDataError, InternalServerError, ValidationError, NotFoundError } = require('../../utils/error-handler/error');
+const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // ROUTE: 1 => Register a new User using: POST '/api/auth/signup'.
@@ -16,14 +18,14 @@ router.post('/signup', [
         // If name, email or password are not valid return error
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.json({ success: false, status: 400, errors: errors });
+            throw new ValidationError();
         }
 
         // If email address already exists, return error
         const { name, email, password } = req.body;
         const isRegistered = await User.exists({ email: email });
         if (isRegistered) {
-            return res.json({ success: false, status: 409, errors: ['Email address is already registered'] });
+            throw new DuplicateDataError();
         }
 
         // Generate salt and hash for plain text password
@@ -44,15 +46,13 @@ router.post('/signup', [
                     }
                 };
                 const token = jwt.sign(payload, JWT_SECRET);
-                res.json({ success: true, status: 200, authToken: token });
+                res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, authToken: token });
             })
             .catch((error) => {
-                console.log(error);
-                return res.json({ success: false, status: 400, errors: [error] });
+                throw new InternalServerError();
             });
     } catch (error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+        next(error);
     }
 });
 
@@ -65,21 +65,21 @@ router.post('/login', [
     try {
         // If email address is not valid, return error
         const errors = validationResult(req);
-        if(!errors.isEmpty()) {
-            return res.json({ success: false, status: 400, errors: [errors] });
+        if (!errors.isEmpty()) {
+            throw new ValidationError();
         }
 
         // Fetch the user with given email and if no data is found, return error
         const { email, password } = req.body;
         const user = await User.findOne({ email: email });
-        if(!user) {
-            return res.json({ success: false, status: 400, errors: ['Please try to login with correct credentials'] });
+        if (!user) {
+            throw new UnauthorizedAccessError('Please try to login with correct credentials');
         }
 
         // Compare password entered by user with the hash value
         const passwordCompare = await bcrypt.compare(password, user.password);
-        if(!passwordCompare) {
-            return res.json({ success: false, status: 400, errors: ['Please try to login with correct credentials'] });
+        if (!passwordCompare) {
+            throw new UnauthorizedAccessError('Please try to login with correct credentials');
         }
 
         // Generate a token by attaching a payload which contains _id of the user
@@ -89,10 +89,9 @@ router.post('/login', [
             }
         };
         const token = jwt.sign(payload, JWT_SECRET);
-        res.json({ success: true, status: 200, authToken: token });
-    } catch(error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+        res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, authToken: token });
+    } catch (error) {
+        next(error);
     }
 });
 
@@ -105,10 +104,14 @@ router.get('/get-user', fetchuser, async (req, res, next) => {
 
         // Find the user using id
         const user = await User.findById(userID).select("-password -_id -__v");
-        return res.json({ success: true, status: 200, user: user });
-    } catch(error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+
+        if (!user) {
+            throw new NotFoundError('User Not Found');
+        }
+
+        return res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, user: user });
+    } catch (error) {
+        next(error);
     }
 });
 
@@ -120,10 +123,14 @@ router.get('/authenticate-user', fetchuser, async (req, res, next) => {
 
         // Find the user using id
         const user = await User.findById(userID).select("-password -_id -__v");
-        return res.json({ success: true, status: 200 });
-    } catch(error) {
-        console.log(error);
-        return res.json({ success: false, status: 500, errors: ['Internal Server Error'] });
+
+        if (!user) {
+            throw new NotFoundError('User Not Found');
+        }
+
+        return res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS });
+    } catch (error) {
+        next(error);
     }
 });
 
