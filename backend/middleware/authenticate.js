@@ -1,6 +1,5 @@
-const { request } = require('express');
 const jwt = require('jsonwebtoken');
-const { InternalServerError, UnauthorizedAccessError } = require('../utils/error-handler/error');
+const { UnauthorizedAccessError } = require('../utils/error-handler/error');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
@@ -9,14 +8,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // So, any other middleware/end-point called after this middleware will be able to get user-id from request object
 // If request header doesnot contain any token, the access is denied
 
-const fetchuser = (req, res, next) => {
-    // Fetch token from the request header and if it doesnot exist deny the access
-    const token = req.header('authToken');
-    if (!token) {
-        throw new UnauthorizedAccessError();
-    }
-    
+const authenticate = (req, res, next) => {
     try {
+        // Fetch token from the request header and if it doesnot exist deny the access
+        const token = req.header('authToken');
+        if (!token) {
+            throw new UnauthorizedAccessError();
+        }
+        
         // Extract payload from the token and attach user object to request
         const payload = jwt.verify(token, JWT_SECRET);
         req.user = payload.user;
@@ -26,4 +25,4 @@ const fetchuser = (req, res, next) => {
     }
 };
 
-module.exports = fetchuser;
+module.exports = authenticate;

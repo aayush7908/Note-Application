@@ -1,10 +1,9 @@
 const { sendMail } = require('../utils/emailjs/sendMail');
-const { httpStatusCode } = require('../utils/error-handler/httpStatusCodes');
 const { InternalServerError } = require('../utils/error-handler/error');
 
 const centralizedErrorHandler = async (err, req, res, next) => {
     if(!err.isCustomError) {
-        err = new InternalServerError();
+        err = new InternalServerError(err);
     }
     console.log("Handled Error =>", err);
     await sendMailIfCritical(err);
@@ -16,7 +15,7 @@ const centralizedErrorHandler = async (err, req, res, next) => {
 };
 
 const sendMailIfCritical = async (err) => {
-    if (err.httpStatusCode === httpStatusCode.INTERNAL_SERVER) {
+    if (err.isCritical) {
         await sendMail(err.description, err.stack);
     }
 }

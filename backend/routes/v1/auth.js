@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../../models/User');
-const fetchuser = require('../../middleware/fetchuser');
-const { UnauthorizedAccessError, DuplicateDataError, InternalServerError, ValidationError, NotFoundError } = require('../../utils/error-handler/error');
+const authenticate = require('../../middleware/authenticate');
+const { UnauthorizedAccessError, DuplicateDataError, ValidationError, NotFoundError } = require('../../utils/error-handler/error');
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -48,9 +48,9 @@ router.post('/signup', [
                 const token = jwt.sign(payload, JWT_SECRET);
                 res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, authToken: token });
             })
-            .catch((error) => {
-                throw new InternalServerError();
-            });
+            // .catch((error) => {
+            //     throw new InternalServerError();
+            // });
     } catch (error) {
         next(error);
     }
@@ -97,7 +97,7 @@ router.post('/login', [
 
 
 // ROUTE: 3 => Fetch details of a logged in user by his/her authToken using: POST '/api/auth/get-user'
-router.get('/get-user', fetchuser, async (req, res, next) => {
+router.get('/get-user', authenticate, async (req, res, next) => {
     try {
         // Fetch the user id from the user object attached to request object by the 'fetchser' middleware
         const userID = req.user.id;
@@ -116,7 +116,7 @@ router.get('/get-user', fetchuser, async (req, res, next) => {
 });
 
 // ROUTE: 4 => Authenticate user by his/her authToken using: POST '/api/auth/get-user'
-router.get('/authenticate-user', fetchuser, async (req, res, next) => {
+router.get('/authenticate-user', authenticate, async (req, res, next) => {
     try {
         // Fetch the user id from the user object attached to request object by the 'fetchser' middleware
         const userID = req.user.id;
