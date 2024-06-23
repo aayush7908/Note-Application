@@ -28,8 +28,10 @@ class DuplicateDataError extends BaseError {
 }
 
 class InternalServerError extends BaseError {
-    constructor(description = 'Internal Server Error') {
-        super(httpStatusCode.INTERNAL_SERVER, description);
+    constructor(err) {
+        super(httpStatusCode.INTERNAL_SERVER, 'Internal Server Error');
+        this.isCritical = true;
+        this.stack = err.stack;
     }
 }
 
