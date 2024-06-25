@@ -7,8 +7,10 @@ This project helped me learn the fundamentals of:
 - React Hooks
 - MongoDB Schema and Validations
 - API Versioning
-- Modular Design of a Project
+- Modular Design of Project
+- Centralized Error Handling
 - Cryptography(Single-Key and Two-Key)
+- Docker and Containerization
 
 
 ## Installation
