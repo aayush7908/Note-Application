@@ -1,0 +1,33 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL}
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      MONGO_URI: ${MONGO_URI}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD}
+      GMAIL_SENDER: ${GMAIL_SENDER}
+      GMAIL_RECEIVER: ${GMAIL_RECEIVER}
+      PORT: ${PORT}
+
+  database:
+    image: mongo:4.1-xenial
+    ports:
+      - 27017:27017
+    volumes:
+      - inotebook:/data/db
+
+volumes:
+  inotebook: 
