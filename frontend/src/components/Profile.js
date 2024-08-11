@@ -27,17 +27,17 @@ export default function Profile() {
             {
                 user ?
                     (<div>
-                        <ul className="list-group list-group-horizontal mb-3">
+                        <ul className="list-group list-group-horizontal-md mb-3">
                             <li className={`list-group-item ${themeColorPalette.themeMode === "light" ? "list-group-item-info" : ""} text-${themeColorPalette.contrastMode} bg-${themeColorPalette.themeMode === "light" ? "" : "danger"} col-md-3 fw-bold`}>Name: </li>
-                            <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode}`}>{user.name}</li>
+                            <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode} overflow-auto`}>{user.name}</li>
                         </ul>
-                        <ul className="list-group list-group-horizontal mb-3">
+                        <ul className="list-group list-group-horizontal-md mb-3">
                             <li className={`list-group-item ${themeColorPalette.themeMode === "light" ? "list-group-item-info" : ""} text-${themeColorPalette.contrastMode} bg-${themeColorPalette.themeMode === "light" ? "" : "danger"} col-md-3 fw-bold`}>Email Address: </li>
-                            <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode}`}>{user.email}</li>
+                            <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode} overflow-auto`}>{user.email}</li>
                         </ul>
-                        <ul className="list-group list-group-horizontal mb-3">
+                        <ul className="list-group list-group-horizontal-md mb-3">
                             <li className={`list-group-item ${themeColorPalette.themeMode === "light" ? "list-group-item-info" : ""} text-${themeColorPalette.contrastMode} bg-${themeColorPalette.themeMode === "light" ? "" : "danger"} col-md-3 fw-bold`}>Account Created On: </li>
-                            <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode}`}>{(new Date(user.date)).toDateString()}</li>
+                            <li className={`list-group-item col-md-9 bg-${themeColorPalette.themeMode} text-${themeColorPalette.contrastMode} overflow-auto`}>{(new Date(user.date)).toDateString()}</li>
                         </ul>
                     </div>) :
                     (<Spinner label={"Fetching User Profile"} />)

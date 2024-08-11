@@ -16,6 +16,7 @@ import Profile from './components/Profile';
 import themeContext from './context/theme/themeContext';
 import NotFound from './components/NotFound';
 import alertContext from './context/alert/alertContext';
+import Admin from './components/Admin';
 
 function App() {
   const { authenticateUser, removeToken } = useContext(authContext);
@@ -45,6 +46,7 @@ function App() {
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/profile" element={<Profile />} />
+            <Route exact path="/admin" element={<Admin />} />
             <Route exact path="/*" element={<NotFound />} />
           </Routes>
         </div>

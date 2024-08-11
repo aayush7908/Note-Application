@@ -21,6 +21,9 @@ const userSchema = new mongoose.Schema({
     totalNotes: {
         type: Number,
         default: 0
+    },
+    isAdmin: {
+        type: Boolean
     }
 });
 
