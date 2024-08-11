@@ -7,13 +7,13 @@ const { centralizedErrorHandler } = require('./middleware/centralizedErrorHandle
 const app = express();
 connectToDatabase();
 
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:3000", process.env.FRONTEND_DOMAIN_URL] }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', require('./routes/v1'));
 app.use(centralizedErrorHandler);
 
-if(process.env.PORT) {
+if (process.env.PORT) {
     app.listen(process.env.PORT, () => {
         console.log(`Listening on port: ${process.env.PORT}`);
     });
