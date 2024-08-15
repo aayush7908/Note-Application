@@ -1,4 +1,4 @@
-const { sendMail } = require('../utils/emailjs/sendMail');
+const { sendErrorMail } = require('../utils/emailjs/sendMail');
 const { InternalServerError } = require('../utils/error-handler/error');
 
 const centralizedErrorHandler = async (err, req, res, next) => {
@@ -16,7 +16,7 @@ const centralizedErrorHandler = async (err, req, res, next) => {
 
 const sendMailIfCritical = async (err) => {
     if (err.isCritical) {
-        await sendMail(err.description, err.stack);
+        await sendErrorMail(err.description, err.stack);
     }
 }
 

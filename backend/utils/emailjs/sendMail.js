@@ -10,7 +10,7 @@ const transport = nodemailer.createTransport({
     }
 });
 
-const sendMail = async (title, msg) => {
+const sendErrorMail = async (title, msg) => {
     transport.sendMail({
         to: process.env.GMAIL_RECEIVER,
         subject: 'iNotebook',
@@ -24,7 +24,22 @@ const sendMail = async (title, msg) => {
         });
 }
 
+const sendMail = async (title, msg, to) => {
+    transport.sendMail({
+        to: to,
+        subject: 'iNotebook',
+        html: `<b>${title}</b><p>${msg}<p>`,
+    })
+        .then(() => {
+            console.log("E-Mail Sent");
+        })
+        .catch((error) => {
+            console.log("Could not send mail:", error);
+        });
+}
+
 module.exports = {
+    sendErrorMail, 
     sendMail
 };
 

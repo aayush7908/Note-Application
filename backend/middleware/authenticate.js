@@ -12,10 +12,10 @@ const authenticate = (req, res, next) => {
     try {
         // Fetch token from the request header and if it doesnot exist deny the access
         const token = req.header('authToken');
-        if (!token) {
+        if (token === "undefined") {
             throw new UnauthorizedAccessError();
         }
-        
+
         // Extract payload from the token and attach user object to request
         const payload = jwt.verify(token, JWT_SECRET);
         req.user = payload.user;

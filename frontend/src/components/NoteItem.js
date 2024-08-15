@@ -19,9 +19,11 @@ export default function NoteItem(props) {
     };
 
     const handleDeleteBtn = async () => {
-        const { success, errors } = await deleteNote(note._id);
-        if(success) createAlert("success", "Note Deleted");
-        else createAlert("danger", errors[0]);
+        if (window.confirm("Do you want to delete the note ?")) {
+            const { success, errors } = await deleteNote(note._id);
+            if (success) createAlert("success", "Note Deleted");
+            else createAlert("danger", errors[0]);
+        }
     };
 
     const handleEditBtn = () => {

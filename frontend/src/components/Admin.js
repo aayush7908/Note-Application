@@ -15,16 +15,12 @@ export default function Admin() {
 
     useEffect(() => {
         (async () => {
-            const { success, errors } = await getUserProfile();
-            if (!success) {
+            const { success, data, errors } = await getAdminDataAPI();
+            if (success) {
+                setData(data);
+            } else {
                 createAlert("danger", errors[0]);
                 navigate("/");
-            } else if (user && !user.isAdmin) {
-                createAlert("danger", ["Unauthorized Access"]);
-                navigate("/");
-            } else {
-                const data = await getAdminDataAPI();
-                setData(data.data);
             }
         })();
         // eslint-disable-next-line
@@ -35,7 +31,7 @@ export default function Admin() {
             const { success } = await removeUserAPI(user._id);
             if (success) {
                 createAlert("success", "User Removed");
-                const temp = {...data};
+                const temp = { ...data };
                 temp.users = temp.users.filter((element, i) => {
                     return (i !== index);
                 })
@@ -80,7 +76,7 @@ export default function Admin() {
                             })
                         }
                     </div>) :
-                    (<Spinner label={"Fetching User Profile"} />)
+                    (<Spinner label={"Fetching Data"} />)
             }
         </div>
     );

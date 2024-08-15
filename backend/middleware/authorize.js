@@ -1,5 +1,7 @@
 const Note = require('../models/Note');
 const User = require('../models/User');
+const { UnauthorizedAccessError, NotFoundError } = require('../utils/error-handler/error');
+const { sendErrorMail } = require('../utils/emailjs/sendMail');
 
 const authorizeUserNote = async (req, res, next) => {
     try {
@@ -29,7 +31,7 @@ const authorizeAdmin = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user.isAdmin) {
-            console.log(user.isAdmin);
+            await sendErrorMail("Unauthorized Admin Access", `Someone tried to access admin panel<br /><b>Name:</b> ${user.name}<br /><b>Email:</b> ${user.email}`);
             throw new UnauthorizedAccessError();
         }
         req.user = user;

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Spinner from './Spinner';
 import authContext from "../context/auth/authContext";
 import alertContext from "../context/alert/alertContext";
@@ -28,7 +28,7 @@ export default function Login() {
         event.preventDefault();
 
         setAuthencating((authenticating) => { return true; });
-        
+
         // Call login func in AuthState
         const { success, errors } = await loginUser(userData);
 
@@ -66,7 +66,10 @@ export default function Login() {
                     <input type="checkbox" className="form-check-input borderAnimateInput" id="showPassword" onChange={togglePasswordVisibility} />
                     <label className="form-check-label" htmlFor="showPassword">Show Password</label>
                 </div>
-                <button type="submit" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`}  disabled={authenticating}>
+                <div className="mb-3">
+                    <Link className="text-decoration-none text-primary" to={"/forgot-password"}>Forgot Password ?</Link>
+                </div>
+                <button type="submit" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`} disabled={authenticating}>
                     {
                         authenticating ? "Authenticating..." : "Login"
                     }
