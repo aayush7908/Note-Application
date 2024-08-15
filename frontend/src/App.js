@@ -17,6 +17,7 @@ import themeContext from './context/theme/themeContext';
 import NotFound from './components/NotFound';
 import alertContext from './context/alert/alertContext';
 import Admin from './components/Admin';
+import ForgotPassword from './components/ForgotPassword';
 
 function App() {
   const { authenticateUser, removeToken } = useContext(authContext);
@@ -43,6 +44,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/about" element={<About />} />
+            <Route exact path="/forgot-password" element={<ForgotPassword />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/profile" element={<Profile />} />

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { UnauthorizedAccessError } = require('../utils/error-handler/error');
+const User = require('../models/User');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
@@ -8,17 +9,29 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // So, any other middleware/end-point called after this middleware will be able to get user-id from request object
 // If request header doesnot contain any token, the access is denied
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
     try {
         // Fetch token from the request header and if it doesnot exist deny the access
         const token = req.header('authToken');
-        if (!token) {
+        if (token === "undefined") {
             throw new UnauthorizedAccessError();
         }
-        
-        // Extract payload from the token and attach user object to request
+
+        // Extract payload from the token
         const payload = jwt.verify(token, JWT_SECRET);
-        req.user = payload.user;
+
+        // Validate token expiry
+        if ((new Date()) > (new Date(payload.expiresAt))) {
+            throw new UnauthorizedAccessError();
+        }
+
+        // Check if user exists
+        const user = await User.findById(payload.user.id, { password: 0, __v: 0 });
+        if (user === null) {
+            throw new UnauthorizedAccessError();
+        }
+        req.user = user;
+
         next();
     } catch (error) {
         next(error);
