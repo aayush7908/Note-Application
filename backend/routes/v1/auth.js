@@ -10,8 +10,8 @@ const { UnauthorizedAccessError, DuplicateDataError, ValidationError, NotFoundEr
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
+const { generateJWT } = require('../../utils/helper/jwt');
 const { sendMail } = require('../../utils/emailjs/sendMail');
-const JWT_SECRET = process.env.JWT_SECRET;
 const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
 // ROUTE: 1 => Register a new User using: POST '/api/auth/signup'.
@@ -39,24 +39,16 @@ router.post('/signup', [
         const hash = await bcrypt.hash(password, salt);
 
         // Save the data
-        User.create({
+        const user = await User.create({
             name: name,
             email: email,
             password: hash
-        })
-            .then((user) => {
-                // Generate a token by attaching a payload object which contains _id of the user
-                const payload = {
-                    user: {
-                        id: user.id
-                    }
-                };
-                const token = jwt.sign(payload, JWT_SECRET);
-                res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, authToken: token });
-            })
-        // .catch((error) => {
-        //     throw new InternalServerError();
-        // });
+        });
+
+        // Generate JWT Token
+        const token = generateJWT(user.id);
+
+        res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, authToken: token });
     } catch (error) {
         next(error);
     }
@@ -88,13 +80,9 @@ router.post('/login', [
             throw new UnauthorizedAccessError('Please try to login with correct credentials');
         }
 
-        // Generate a token by attaching a payload which contains _id of the user
-        const payload = {
-            user: {
-                id: user.id
-            }
-        };
-        const token = jwt.sign(payload, JWT_SECRET);
+        // Generate JWT token
+        const token = generateJWT(user.id);
+
         res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, authToken: token });
     } catch (error) {
         next(error);
@@ -105,15 +93,8 @@ router.post('/login', [
 // ROUTE: 3 => Fetch details of a logged in user by his/her authToken using: POST '/api/auth/get-user'
 router.get('/get-user', authenticate, async (req, res, next) => {
     try {
-        // Fetch the user id from the user object attached to request object by the 'fetchser' middleware
-        const userID = req.user.id;
-
-        // Find the user using id
-        const user = await User.findById(userID).select("-password -_id -__v");
-
-        if (!user) {
-            throw new NotFoundError('User Not Found');
-        }
+        // Fetch user attached to `req` object in `authenticate` middleware
+        const user = req.user;
 
         return res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, user: user });
     } catch (error) {
@@ -124,16 +105,7 @@ router.get('/get-user', authenticate, async (req, res, next) => {
 // ROUTE: 4 => Authenticate user by his/her authToken using: POST '/api/auth/get-user'
 router.get('/authenticate-user', authenticate, async (req, res, next) => {
     try {
-        // Fetch the user id from the user object attached to request object by the 'fetchser' middleware
-        const userID = req.user.id;
-
-        // Find the user using id
-        const user = await User.findById(userID).select("-password -_id -__v");
-
-        if (!user) {
-            throw new NotFoundError('User Not Found');
-        }
-
+        // Authentication middleware will deal with this
         return res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS });
     } catch (error) {
         next(error);
@@ -151,18 +123,14 @@ router.post('/send-otp', body('email', 'Enter a valid email address').isEmail(),
 
         // Find user details from provided email and check if account exists
         const email = req.body.email;
-        const user = await User.find({ email: email });
-        if (user.length === 0) {
+        const user = await User.findOne({ email: email });
+        if (user === null) {
             throw new NotFoundError('User Not Found');
         }
 
         // Create an OTP and store it in database
+        const newOtp = generateOTP(email);
         const otpId = await OTP.exists({ userEmail: email });
-        const newOtp = {
-            userEmail: email,
-            otp: generateOTP(),
-            expiresOn: new Date(Date.now() + validationTimeLimit)
-        };
         if (otpId) {
             const otp = await OTP.findByIdAndUpdate(otpId, newOtp);
         } else {
@@ -187,24 +155,22 @@ router.post('/verify-otp', [body('email', 'Enter a valid email address').isEmail
             throw new ValidationError(errors.errors[0].msg);
         }
 
-        // Find OTP corresponding to given inputs and check if it is valid
+        // Find OTP corresponding to given inputs
         const email = req.body.email;
-        const otp = await OTP.find({ otp: req.body.otp, userEmail: email });
-        if (otp.length === 0) {
+        const otp = await OTP.findOne({ otp: req.body.otp, userEmail: email });
+        if (otp === null) {
             throw new ValidationError("Invalid OTP");
         }
-        if ((new Date()) >= otp[0].expiresOn) {
-            await OTP.findByIdAndDelete(otp[0]._id);
+
+        // Check if OTP is expired
+        if ((new Date()) >= otp.expiresOn) {
+            await OTP.findByIdAndDelete(otp._id);
             throw new ValidationError("OTP Expired");
         }
 
         // Generate a password reset token and store it in database
         const tokenId = await PasswordResetToken.exists({ userEmail: email });
-        const newToken = {
-            userEmail: email,
-            token: generateToken(),
-            expiresOn: new Date(Date.now() + validationTimeLimit)
-        };
+        const newToken = generateToken(email);
         if (tokenId) {
             await PasswordResetToken.findByIdAndUpdate(tokenId, newToken);
         } else {
@@ -212,7 +178,7 @@ router.post('/verify-otp', [body('email', 'Enter a valid email address').isEmail
         }
 
         // Delete the validated OTP
-        await OTP.findByIdAndDelete(otp[0]._id);
+        await OTP.findByIdAndDelete(otp._id);
 
         return res.status(httpStatusCode.SUCCESS).json({ success: true, status: httpStatusCode.SUCCESS, token: newToken.token });
     } catch (error) {
@@ -237,12 +203,14 @@ router.post('/reset-password', [body('email', 'Enter a valid email address').isE
 
         // Check if token is valid
         const email = req.body.email;
-        const token = await PasswordResetToken.find({ token: reqToken, userEmail: email });
-        if (token.length === 0) {
+        const token = await PasswordResetToken.findOne({ token: reqToken, userEmail: email });
+        if (token === null) {
             throw new UnauthorizedAccessError();
         }
-        if ((new Date()) >= token[0].expiresOn) {
-            await PasswordResetToken.findByIdAndDelete(token[0]._id);
+
+        // Check token expiry
+        if ((new Date()) >= token.expiresOn) {
+            await PasswordResetToken.findByIdAndDelete(token._id);
             throw new UnauthorizedAccessError();
         }
 
@@ -252,7 +220,7 @@ router.post('/reset-password', [body('email', 'Enter a valid email address').isE
         await User.findOneAndUpdate({ email: email }, { password: hash });
 
         // Delete validated token
-        await PasswordResetToken.findByIdAndDelete(token[0]._id);
+        await PasswordResetToken.findByIdAndDelete(token._id);
 
         // Send confirmation mail to user
         await sendMail("Password Changed", `Your password is changed successfully.</b>`, email);
