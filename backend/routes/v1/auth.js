@@ -147,7 +147,7 @@ router.post('/send-otp', body('email', 'Enter a valid email address').isEmail(),
 });
 
 // ROUTE: 6 => Verify OTP: POST '/api/auth/verify-otp'
-router.post('/verify-otp', [body('email', 'Enter a valid email address').isEmail(), body('otp', 'Enter a valid otp').isNumeric()], async (req, res, next) => {
+router.post('/verify-otp', [body('email', 'Enter a valid email address').isEmail(), body('otp', 'Enter a valid otp').isAlphanumeric()], async (req, res, next) => {
     try {
         // Throw error if data is not valid
         const errors = validationResult(req);
