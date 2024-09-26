@@ -13,7 +13,7 @@ const AuthState = (props) => {
     // If rememberMe === true: token stored in the localstorage will remain as it is
     // Used and updated by component: Login.js
     const [rememberMe, setRememberMe] = useState(true);
-    
+
     // 2. To store the user data of: Name, Email address, Account creation date.
     // When the user visits the profile section, an API call is made to fetch user data
     // This data is stored in the state variable
@@ -41,7 +41,7 @@ const AuthState = (props) => {
         let data = {
             success: true
         }
-        
+
         if (localStorage.token) {
             // API Call
             data = await authenticateUserAPI();
@@ -50,7 +50,7 @@ const AuthState = (props) => {
             setIsAuthenticated(data.success);
 
             // logout user if token is invalid
-            if(!data.success) {
+            if (!data.success) {
                 logoutUser();
             }
         }
@@ -114,7 +114,7 @@ const AuthState = (props) => {
         }
 
         setAuthencating(false);
-        
+
         // Return the values to the caller so that the caller can decide which ALERT message to show.
         return {
             success: data.success,
@@ -166,7 +166,7 @@ const AuthState = (props) => {
     // Called by component: Login.js => (when user checks/unchecks the 'Remember Me' check-box)
 
     const toggleRememberMe = () => {
-        if(rememberMe) {
+        if (rememberMe) {
             setRememberMe(false);
             localStorage.setItem("removeToken", true);
         } else {
@@ -181,12 +181,12 @@ const AuthState = (props) => {
     // So, user will feel as if his login is valid for only on browser-session.
     // Called by component: App.js => (via 'useEffect' hook for initial check)
     const removeToken = () => {
-        if(localStorage.getItem("removeToken")) {
+        if (localStorage.getItem("removeToken")) {
             localStorage.removeItem("removeToken");
             localStorage.removeItem("token");
         }
     };
- 
+
 
     return (
         <AuthContext.Provider value={{ user, getUserProfile, authencating, isAuthenticated, authenticateUser, loginUser, signupUser, logoutUser, rememberMe, toggleRememberMe, removeToken }} >

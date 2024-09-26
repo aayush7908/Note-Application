@@ -66,9 +66,9 @@ export default function Login() {
                     <input type="checkbox" className="form-check-input borderAnimateInput" id="showPassword" onChange={togglePasswordVisibility} />
                     <label className="form-check-label" htmlFor="showPassword">Show Password</label>
                 </div>
-                {/* <div className="mb-3">
+                <div className="mb-3">
                     <Link className="text-decoration-none text-primary" to={"/forgot-password"}>Forgot Password ?</Link>
-                </div> */}
+                </div>
                 <button type="submit" className={`btn btn-${themeColorPalette.themeMode === "light" ? "primary" : "success"}`} disabled={authenticating}>
                     {
                         authenticating ? "Authenticating..." : "Login"
