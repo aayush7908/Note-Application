@@ -10,18 +10,19 @@ const authorizeUserNote = async (req, res, next) => {
         const noteID = req.params.noteID;
 
         // Fetch note by noteID and if it doesnot exist, return error
-        const note = await Note.findById(noteID);
+        const note = await Note.findById(noteID, { _id: 1, createdBy: 1 });
         if (!note) {
             throw new NotFoundError('Note Not Found');
         }
 
-        // If user in Note and user-id from token doesnot match, return error
-        if (note.user.toString() !== userID) {
+        // If note is not created by authenticated user, return error
+        if (note.createdBy.toString() !== userID) {
             throw new UnauthorizedAccessError();
         }
-
         req.note = note;
+
         next();
+
     } catch (error) {
         next(error);
     }

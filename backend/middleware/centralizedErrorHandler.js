@@ -8,8 +8,6 @@ const centralizedErrorHandler = async (err, req, res, next) => {
     console.log("Handled Error =>", err);
     await sendMailIfCritical(err);
     return res.status(err.httpStatusCode).json({
-        success: false,
-        status: err.httpStatusCode,
         errors: [err.description]
     });
 };

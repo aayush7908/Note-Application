@@ -18,6 +18,7 @@ import NotFound from './components/NotFound';
 import alertContext from './context/alert/alertContext';
 import Admin from './components/Admin';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 function App() {
   const { authenticateUser, removeToken } = useContext(authContext);
@@ -29,7 +30,7 @@ function App() {
       detectThemeOnLoad();
       removeToken();
       const response = await authenticateUser();
-      if(!response.success) {
+      if (!response.success) {
         createAlert("danger", response.errors[0]);
       }
     })();
@@ -45,6 +46,7 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route exact path="/about" element={<About />} />
             <Route exact path="/forgot-password" element={<ForgotPassword />} />
+            <Route exact path="/reset-password" element={<ResetPassword />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/profile" element={<Profile />} />

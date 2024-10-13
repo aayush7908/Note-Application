@@ -86,10 +86,48 @@ const sendOtpAPI = async (body) => {
     return response;
 }
 
+const verifyOtpAPI = async (body) => {
+    let response;
+    try {
+        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/verify-otp`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authToken": localStorage.token
+            },
+            body: JSON.stringify(body)
+        });
+        response = await response.json();
+    } catch (err) {
+        response = error(err);
+    }
+    return response;
+}
+
+const resetPasswordAPI = async (body) => {
+    let response;
+    try {
+        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/reset-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authToken": localStorage.token
+            },
+            body: JSON.stringify(body)
+        });
+        response = await response.json();
+    } catch (err) {
+        response = error(err);
+    }
+    return response;
+}
+
 export {
     authenticateUserAPI,
     loginUserAPI,
     signupUserAPI,
     getUserProfileAPI,
-    sendOtpAPI
+    sendOtpAPI,
+    verifyOtpAPI,
+    resetPasswordAPI
 };

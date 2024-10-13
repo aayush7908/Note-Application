@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { sendOtpAPI } from "../utils/api-calls/auth";
+import { Link, redirect, useNavigate } from "react-router-dom";
+import { sendOtpAPI, verifyOtpAPI } from "../utils/api-calls/auth";
 import authContext from "../context/auth/authContext";
 import alertContext from "../context/alert/alertContext";
 import themeContext from "../context/theme/themeContext";
@@ -33,12 +33,13 @@ export default function ForgotPassword() {
     const handleVerifyOtp = async () => {
         setProcessing(true);
         // Call send otp func
-        const { success, errors } = await sendOtpAPI({ email: email });
+        const { success, token, errors } = await verifyOtpAPI({ email: email, otp: otp });
         setProcessing(false);
 
         // Check the response
         if (success) {
-            createAlert("success", "OTP sent successfully");
+            navigate(`/reset-password?token=${token}&email=${email}`);
+            createAlert("success", "OTP verified");
         } else {
             createAlert("danger", errors[0]);
         }

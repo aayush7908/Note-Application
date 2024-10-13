@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
+    accountCreatedOn: {
         type: Date,
         default: Date.now
     },
@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
     isAdmin: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 });
 
