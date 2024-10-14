@@ -1,4 +1,4 @@
-const error = (err) => {
+const error = () => {
     return {
         success: false, 
         errors: ["Something went wrong !!!"]

@@ -1,133 +1,65 @@
-import { error } from "../error-handler/error";
+import { saveToken } from '../cookie/cookie-utils';
 
-const authenticateUserAPI = async () => {
-    let response;
+export const registerUserAPI = async (body) => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/authenticate-user`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
-        });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
-
-const loginUserAPI = async (credentials) => {
-    let response;
-    try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(body)
         });
-        response = await response.json();
+        const data = await res.json();
+
+        if (res.ok) {
+            saveToken(data.authToken);
+            return {
+                success: true,
+                data: data.user
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
     } catch (err) {
-        response = error(err);
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
     }
-    return response;
 }
 
-const signupUserAPI = async (credentials) => {
-    let response;
+export const loginUserAPI = async (body) => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/signup`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(body)
         });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
+        const data = await res.json();
 
-const getUserProfileAPI = async () => {
-    let response;
-    try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/get-user`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
+        if (res.ok) {
+            saveToken(data.authToken);
+            return {
+                success: true,
+                data: data.user
             }
-        });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
+        }
 
-const sendOtpAPI = async (body) => {
-    let response;
-    try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/send-otp`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            },
-            body: JSON.stringify(body)
-        });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
+        return {
+            success: false,
+            errors: data.errors
+        }
 
-const verifyOtpAPI = async (body) => {
-    let response;
-    try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/verify-otp`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            },
-            body: JSON.stringify(body)
-        });
-        response = await response.json();
     } catch (err) {
-        response = error(err);
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
     }
-    return response;
 }
-
-const resetPasswordAPI = async (body) => {
-    let response;
-    try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/reset-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            },
-            body: JSON.stringify(body)
-        });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
-
-export {
-    authenticateUserAPI,
-    loginUserAPI,
-    signupUserAPI,
-    getUserProfileAPI,
-    sendOtpAPI,
-    verifyOtpAPI,
-    resetPasswordAPI
-};

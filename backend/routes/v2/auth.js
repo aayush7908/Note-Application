@@ -57,7 +57,14 @@ router.post('/register', [
         sendWelcomeMail(user.email);
 
         res.status(httpStatusCode.SUCCESS).json({
-            authToken: token
+            authToken: token,
+            user: {
+                name: user.name,
+                email: user.email,
+                totalNotes: user.totalNotes,
+                isAdmin: user.isAdmin,
+                accountCreatedOn: user.accountCreatedOn
+            }
         });
 
     } catch (error) {
@@ -95,7 +102,14 @@ router.post('/login', [
         const token = generateJWT(user.id);
 
         res.status(httpStatusCode.SUCCESS).json({
-            authToken: token
+            authToken: token,
+            user: {
+                name: user.name,
+                email: user.email,
+                totalNotes: user.totalNotes,
+                isAdmin: user.isAdmin,
+                accountCreatedOn: user.accountCreatedOn
+            }
         });
 
     } catch (error) {

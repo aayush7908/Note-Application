@@ -8,7 +8,7 @@ const { authorizeUserNote } = require('../../middleware/authorize');
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { default: mongoose } = require('mongoose');
 const defaultTag = 'general';
-const maxPageSize = 10;
+const maxPageSize = 15;
 
 
 // ROUTE: 1 => Create Note: POST '/api/v2/note/create'
