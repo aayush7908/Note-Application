@@ -24,12 +24,12 @@ const authenticate = async (req, res, next) => {
         const payload = jwt.verify(jwtToken, JWT_SECRET);
 
         // Validate token expiry
-        if ((new Date()) > (new Date(payload.expiresAt))) {
+        if (Date.now() >= payload.expiresOn) {
             throw new UnauthorizedAccessError();
         }
 
         // Check if user exists
-        const user = await User.findById(payload.user.id, { password: 0, __v: 0 });
+        const user = await User.findById(payload.user.id, { __v: 0 });
         if (user === null) {
             throw new UnauthorizedAccessError();
         }
