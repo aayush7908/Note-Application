@@ -16,7 +16,7 @@ const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
 const { generateJWT } = require('../../utils/helper/jwt');
-const { sendMail } = require('../../utils/emailjs/sendMail');
+const { sendMail } = require('../../utils/email/sendMail');
 const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
 

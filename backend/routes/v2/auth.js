@@ -15,7 +15,7 @@ const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
 const { generateJWT } = require('../../utils/helper/jwt');
-const { sendMail } = require('../../utils/emailjs/sendMail');
+const { sendMail, sendPasswordResetOtpMail, sendConfirmationMail, sendWelcomeMail } = require('../../utils/email/sendMail');
 const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
 
@@ -52,6 +52,9 @@ router.post('/register', [
 
         // Generate JWT Token
         const token = generateJWT(user.id);
+
+        // Send Mail
+        sendWelcomeMail(user.email);
 
         res.status(httpStatusCode.SUCCESS).json({
             authToken: token
@@ -122,13 +125,12 @@ router.post('/forgot-password/otp/send',
             // Create an OTP and store it in database
             const newOtp = generateOTP(email);
             await OTP.deleteOne({ userEmail: email });
-            const otp = await OTP.create(newOtp);
+            const { otp } = await OTP.create(newOtp);
 
             // Send email containing OTP to user
-            await sendMail(
-                "Password Reset",
-                `Your request for password reset is received.<br />Your OTP is: <b>${newOtp.otp}</b>`,
-                email
+            sendPasswordResetOtpMail(
+                email,
+                otp
             );
 
             return res.status(httpStatusCode.SUCCESS).json({
@@ -224,10 +226,10 @@ router.post('/forgot-password/reset-password', [
         await PasswordResetToken.findByIdAndDelete(token.id);
 
         // Send confirmation mail to user
-        await sendMail(
-            "Password Changed",
-            `Your password is changed successfully.</b>`,
-            email
+        sendConfirmationMail(
+            email,
+            'Password Changed',
+            `Password for your <b>iNotebook</b> has been changed successfully. Login again to continue using your account.`,
         );
 
         return res.status(httpStatusCode.SUCCESS).json({
