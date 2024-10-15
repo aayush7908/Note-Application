@@ -111,7 +111,10 @@ export default function LoginForm() {
                 </div>
             </div>
             <div className="flex justify-center">
-                <FormButton disabled={isProcessing}>
+                <FormButton
+                    disabled={isProcessing}
+                    handleClick={() => { }}
+                >
                     {
                         isProcessing ? (
                             <LoaderCircle className="animate-spin" />

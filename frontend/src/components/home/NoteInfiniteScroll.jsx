@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { LoaderCircle } from "lucide-react";
 import Note from "./Note";
 import { getAllNotesAPI } from "../../utils/api-calls/note"
 import authContext from "../../context/auth/authContext";
 import alertContext from "../../context/alert/alertContext";
+import Loader from "../Loader";
+import DataNotFound from "../DataNotFound";
 
 export default function NoteInfiniteScroll() {
 
     const [notes, setNotes] = useState([]);
     const [pageNumber, setPageNumber] = useState(0);
+    const [totalNotes, setTotalNotes] = useState(1);
     const { user } = useContext(authContext);
     const { createAlert } = useContext(alertContext);
     const { ref, inView } = useInView();
@@ -24,11 +26,14 @@ export default function NoteInfiniteScroll() {
     }
 
     useEffect(() => {
-        if (inView && notes.length < user.totalNotes) {
+        if (inView && notes.length < totalNotes) {
             (async () => {
-                const fetchedData = await fetchFunction();
+                const fetchedNotes = await fetchFunction();
+                if (pageNumber === 0 && fetchedNotes.length > 0) {
+                    setTotalNotes(fetchedNotes[0].totalNotes);
+                }
                 let newNotes = [...notes];
-                newNotes = newNotes.concat(fetchedData);
+                newNotes = newNotes.concat(fetchedNotes);
                 setNotes(newNotes);
                 setPageNumber(pageNumber => pageNumber + 1);
             })();
@@ -49,19 +54,13 @@ export default function NoteInfiniteScroll() {
                         }
                     </div>
                 ) : (
-                    <div className="flex gap-[0.5rem] justify-center items-center mt-[1rem]">
-                        <span className="text-xl font-medium">No Notes Found</span>
-                    </div>
+                    <DataNotFound />
                 )
             }
             {
-                notes.length < user.totalNotes && (
-                    <div
-                        ref={ref}
-                        className="flex gap-[0.5rem] justify-center items-center mt-[1rem]"
-                    >
-                        <LoaderCircle className="animate-spin" />
-                        <span>Loading More Data ...</span>
+                notes.length < totalNotes && (
+                    <div ref={ref}>
+                        <Loader />
                     </div>
                 )
             }

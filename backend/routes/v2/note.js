@@ -209,6 +209,37 @@ router.get('/get/all', authenticate, async (req, res, next) => {
             }
         ]);
 
+        if (pageNumber === 0) {
+            const totalNotes = await Note.countDocuments([
+                {
+                    $match: {
+                        $or: [
+                            {
+                                title: {
+                                    $regex: searchKeyword,
+                                    $options: 'i'
+                                }
+                            }, {
+                                description: {
+                                    $regex: searchKeyword,
+                                    $options: 'i'
+                                }
+                            }, {
+                                tag: {
+                                    $regex: searchKeyword,
+                                    $options: 'i'
+                                }
+                            }
+                        ],
+                        createdBy: userID
+                    }
+                }
+            ]);
+            if (totalNotes > 0) {
+                notes[0].totalNotes = totalNotes;
+            }
+        }
+
         return res.status(httpStatusCode.SUCCESS).json({
             notes: notes
         });

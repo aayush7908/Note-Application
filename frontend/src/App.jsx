@@ -15,6 +15,9 @@ import Alert from './components/Alert';
 import HomePage from './components/home/HomePage';
 import LoginPage from './components/auth/login/LoginPage';
 import RegisterPage from './components/auth/register/RegisterPage';
+import NoteViewPage from './components/note/view/NoteViewPage';
+import NoteEditPage from './components/note/edit/NoteEditPage';
+import NoteCreatePage from './components/note/create/NoteCreatePage';
 
 function App() {
 
@@ -55,6 +58,9 @@ function App() {
 								<Route exact path="/" element={<HomePage />} />
 								<Route exact path="/auth/login" element={<LoginPage />} />
 								<Route exact path="/auth/register" element={<RegisterPage />} />
+								<Route exact path="/note/create" element={<NoteCreatePage />} />
+								<Route exact path="/note/view/:id" element={<NoteViewPage />} />
+								<Route exact path="/note/edit/:id" element={<NoteEditPage />} />
 								{/* <Route exact path="/about" element={<About />} />
 								<Route exact path="/forgot-password" element={<ForgotPassword />} />
 								<Route exact path="/reset-password" element={<ResetPassword />} />
