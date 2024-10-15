@@ -48,7 +48,7 @@ export default function Note({ note }) {
             </div>
             <div className="grid gap-[2rem]">
                 <h1 className="text-xl font-medium">{note.title}</h1>
-                <p className="text-lg">{note.description}</p>
+                <p className="text-lg whitespace-pre-wrap">{note.description}</p>
                 <div className="flex">
                     <span className="px-[1rem] py-[0.2rem] border-2 rounded-full border-slate-300 bg-slate-100">
                         {note.tag}

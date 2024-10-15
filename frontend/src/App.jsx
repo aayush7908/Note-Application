@@ -18,6 +18,8 @@ import RegisterPage from './components/auth/register/RegisterPage';
 import NoteViewPage from './components/note/view/NoteViewPage';
 import NoteEditPage from './components/note/edit/NoteEditPage';
 import NoteCreatePage from './components/note/create/NoteCreatePage';
+import AccountPage from './components/account/AccountPage';
+import LogoutPage from './components/auth/logout/LogoutPage';
 
 function App() {
 
@@ -27,7 +29,7 @@ function App() {
 
 	useEffect(() => {
 		(async () => {
-			if(getToken() === null) {
+			if (getToken() === null) {
 				return;
 			}
 			setIsAuthenticating(true);
@@ -58,9 +60,11 @@ function App() {
 								<Route exact path="/" element={<HomePage />} />
 								<Route exact path="/auth/login" element={<LoginPage />} />
 								<Route exact path="/auth/register" element={<RegisterPage />} />
+								<Route exact path="/auth/logout" element={<LogoutPage />} />
 								<Route exact path="/note/create" element={<NoteCreatePage />} />
 								<Route exact path="/note/view/:id" element={<NoteViewPage />} />
 								<Route exact path="/note/edit/:id" element={<NoteEditPage />} />
+								<Route exact path="/account" element={<AccountPage />} />
 								{/* <Route exact path="/about" element={<About />} />
 								<Route exact path="/forgot-password" element={<ForgotPassword />} />
 								<Route exact path="/reset-password" element={<ResetPassword />} />

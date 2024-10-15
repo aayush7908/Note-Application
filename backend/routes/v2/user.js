@@ -47,13 +47,10 @@ router.patch('/update/name',
     async (req, res, next) => {
         try {
             // Fetch user from request object
-            const user = req.user;
+            const userID = req.user.id;
 
-            // Update name
-            user.name = req.body.name;
-
-            // Save updated user in database
-            await user.save();
+            // Update user in database
+            const user = await User.findByIdAndUpdate(userID, { name: req.body.name });
 
             return res.status(httpStatusCode.SUCCESS).json({
                 user: {

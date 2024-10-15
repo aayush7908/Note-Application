@@ -30,3 +30,35 @@ export const authenticateUserAPI = async () => {
         }
     }
 }
+
+export const updateUserAPI = async (body) => {
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/update/name`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": getToken()
+            },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            return {
+                success: true,
+                data: data.user
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
+    }
+}

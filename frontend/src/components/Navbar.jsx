@@ -1,14 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import authContext from "../context/auth/authContext";
+import { Menu, MenuSquare, UserCircle } from "lucide-react";
+import NavbarMenu from "./NavbarMenu";
 
 export default function Navbar() {
 
-    const { user } = useContext(authContext);
+    const [isMenuVisible, setIsMenuVisible] = useState(false);
 
     return (
         <div className="h-[4rem] w-full fixed top-0 border-b-2 border-slate-300 bg-slate-200">
-            <div className="h-full w-full px-[2rem] flex justify-between items-center">
+            <div className="h-full w-full px-[1rem] md:px-[2rem] flex justify-between items-center">
                 {/* Logo */}
                 <Link
                     to={"/"}
@@ -24,42 +25,34 @@ export default function Navbar() {
                 </Link>
 
                 {/* Navigation Menu */}
-                <ul className="flex items-center gap-[1rem]">
-                    {
-                        user ? (
-                            <>
-                                <li>
-                                    <Link
-                                        to={"/account"}
-                                        className="text-lg font-medium underline-offset-2 hover:underline"
-                                    >
-                                        Account
-                                    </Link>
-                                </li>
-                            </>
-                        ) : (
-                            <>
-                                <li>
-                                    <Link
-                                        to={"/auth/login"}
-                                        className="text-lg font-medium underline-offset-2 hover:underline"
-                                    >
-                                        Login
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to={"/auth/register"}
-                                        className="text-lg font-medium underline-offset-2 hover:underline"
-                                    >
-                                        Register
-                                    </Link>
-                                </li>
-                            </>
-                        )
-                    }
-                </ul>
+                <div className="hidden md:block">
+                    <ul className="flex items-center gap-[1rem]">
+                        <NavbarMenu />
+                    </ul>
+                </div>
+                <div className="md:hidden flex items-center">
+                    <button
+                        to={"/account"}
+                        onClick={() => {
+                            setIsMenuVisible((isMenuVisible) => (!isMenuVisible));
+                        }}
+                        className="text-lg font-medium"
+                    >
+                        <MenuSquare className="size-[2rem]" />
+                    </button>
+                </div>
             </div>
+
+            {/* Dropdown Menu */}
+            {
+                isMenuVisible && (
+                    <div className="fixed top-[4.5rem] right-[2rem] p-[0.5rem] border-2 rounded-lg border-slate-400 bg-slate-100">
+                        <ul className="grid gap-[0.5rem]">
+                            <NavbarMenu />
+                        </ul>
+                    </div>
+                )
+            }
         </div>
     );
 }

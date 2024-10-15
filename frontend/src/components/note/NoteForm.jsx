@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Save, SquareX } from "lucide-react";
 import FormButton from "../FormButton";
 import alertContext from "../../context/alert/alertContext";
 import { createNoteAPI, updateNoteAPI } from "../../utils/api-calls/note";
@@ -128,6 +128,13 @@ export default function NoteForm({ note }) {
             </div>
             <div className="flex justify-center gap-[1rem]">
                 <FormButton
+                    type={"button"}
+                    disabled={isProcessing}
+                    handleClick={handleCancel}
+                >
+                    <SquareX />
+                </FormButton>
+                <FormButton
                     disabled={isProcessing}
                     handleClick={() => { }}
                 >
@@ -135,16 +142,9 @@ export default function NoteForm({ note }) {
                         isProcessing ? (
                             <LoaderCircle className="animate-spin" />
                         ) : (
-                            <span>Save</span>
+                            <Save />
                         )
                     }
-                </FormButton>
-                <FormButton
-                    type={"button"}
-                    disabled={isProcessing}
-                    handleClick={handleCancel}
-                >
-                    <span>Cancel</span>
                 </FormButton>
             </div>
         </form>
