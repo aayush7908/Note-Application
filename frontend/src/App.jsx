@@ -10,7 +10,7 @@ import authContext from './context/auth/authContext';
 import alertContext from './context/alert/alertContext';
 import { authenticateUserAPI } from './utils/api-calls/user'
 import { getToken, removeToken } from './utils/cookie/cookie-utils'
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar/Navbar';
 import Alert from './components/Alert';
 import HomePage from './components/home/HomePage';
 import LoginPage from './components/auth/login/LoginPage';
@@ -20,6 +20,8 @@ import NoteEditPage from './components/note/edit/NoteEditPage';
 import NoteCreatePage from './components/note/create/NoteCreatePage';
 import AccountPage from './components/account/AccountPage';
 import LogoutPage from './components/auth/logout/LogoutPage';
+import AdminPage from './components/admin/AdminPage';
+import NotFound from './components/NotFound';
 
 function App() {
 
@@ -49,7 +51,7 @@ function App() {
 		<>
 			<Router>
 				<Navbar />
-				<div className="h-full pt-[5rem] px-[1rem] md:px-[2rem]">
+				<div className="h-full pt-[5rem] px-[1rem] md:px-[3rem] lg:px-[5rem]">
 					{
 						isAuthenticating ? (
 							<div className="flex justify-center items-center gap-[0.5rem]">
@@ -65,14 +67,8 @@ function App() {
 								<Route exact path="/note/view/:id" element={<NoteViewPage />} />
 								<Route exact path="/note/edit/:id" element={<NoteEditPage />} />
 								<Route exact path="/account" element={<AccountPage />} />
-								{/* <Route exact path="/about" element={<About />} />
-								<Route exact path="/forgot-password" element={<ForgotPassword />} />
-								<Route exact path="/reset-password" element={<ResetPassword />} />
-								<Route exact path="/login" element={<Login />} />
-								<Route exact path="/signup" element={<Signup />} />
-								<Route exact path="/profile" element={<Profile />} />
-								<Route exact path="/admin" element={<Admin />} />
-								<Route exact path="/*" element={<NotFound />} /> */}
+								<Route exact path="/admin" element={<AdminPage />} />
+								<Route exact path="/*" element={<NotFound />} />
 							</Routes>
 						)
 					}

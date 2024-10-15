@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, MenuSquare, UserCircle } from "lucide-react";
+import { MenuSquare } from "lucide-react";
 import NavbarMenu from "./NavbarMenu";
 
 export default function Navbar() {
@@ -9,7 +9,7 @@ export default function Navbar() {
 
     return (
         <div className="h-[4rem] w-full fixed top-0 border-b-2 border-slate-300 bg-slate-200">
-            <div className="h-full w-full px-[1rem] md:px-[2rem] flex justify-between items-center">
+            <div className="h-full w-full px-[1rem] md:px-[3rem] lg:px-[5rem] flex justify-between items-center">
                 {/* Logo */}
                 <Link
                     to={"/"}

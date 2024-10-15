@@ -48,10 +48,10 @@ export default function NoteForm({ note }) {
             tag: tag.current.value
         };
         const { success, data, errors } = (
-            note === null ? await createNoteAPI(formData) : await updateNoteAPI(note.id, formData)
+            note === null ? await createNoteAPI(formData) : await updateNoteAPI(note._id, formData)
         );
         if (success) {
-            navigate(`/note/view/${data.id}`);
+            navigate(`/note/view/${data._id}`);
             createAlert("success", "Note Saved Successfully");
         } else {
             createAlert("danger", errors[0]);

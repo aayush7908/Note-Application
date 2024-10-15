@@ -16,7 +16,7 @@ export default function Note({ note }) {
         setIsProcessing(true);
         const isDeleteConfirm = window.confirm("Do you want to delete this Note ?");
         if (isDeleteConfirm) {
-            const { success, errors } = await deleteNoteAPI(note.id);
+            const { success, errors } = await deleteNoteAPI(note._id);
             if (success) {
                 navigate("/");
                 createAlert("success", "Note Deleted Successfully");
@@ -30,7 +30,7 @@ export default function Note({ note }) {
     return (
         <div className="grid gap-[1rem] py-[1rem]">
             <div className="flex justify-end gap-[1rem]">
-                <LinkButton redirectPath={`/note/edit/${note.id}`}>
+                <LinkButton redirectPath={`/note/edit/${note._id}`}>
                     <PencilLine />
                 </LinkButton>
                 <FormButton

@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { useSearchParams } from "react-router-dom";
 import Note from "./Note";
 import { getAllNotesAPI } from "../../utils/api-calls/note"
 import authContext from "../../context/auth/authContext";
 import alertContext from "../../context/alert/alertContext";
 import Loader from "../Loader";
 import DataNotFound from "../DataNotFound";
+import SearchForm from "./SearchForm";
 
 export default function NoteInfiniteScroll() {
 
@@ -15,9 +17,10 @@ export default function NoteInfiniteScroll() {
     const { user } = useContext(authContext);
     const { createAlert } = useContext(alertContext);
     const { ref, inView } = useInView();
+    const [searchParams] = useSearchParams();
 
     const fetchFunction = async () => {
-        const { success, data, errors } = await getAllNotesAPI(pageNumber, "");
+        const { success, data, errors } = await getAllNotesAPI(pageNumber, searchParams.get("searchKeyword") || "");
         if (success) {
             return data;
         }
@@ -29,8 +32,10 @@ export default function NoteInfiniteScroll() {
         if (inView && notes.length < totalNotes) {
             (async () => {
                 const fetchedNotes = await fetchFunction();
-                if (pageNumber === 0 && fetchedNotes.length > 0) {
-                    setTotalNotes(fetchedNotes[0].totalNotes);
+                if (pageNumber === 0) {
+                    setTotalNotes(
+                        fetchedNotes.length > 0 ? fetchedNotes[0].totalNotes : 0
+                    );
                 }
                 let newNotes = [...notes];
                 newNotes = newNotes.concat(fetchedNotes);
@@ -42,6 +47,7 @@ export default function NoteInfiniteScroll() {
 
     return (
         <>
+            <SearchForm />
             {
                 notes.length > 0 ? (
                     <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-[2rem]">

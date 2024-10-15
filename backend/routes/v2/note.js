@@ -6,6 +6,7 @@ const authenticate = require('../../middleware/authenticate');
 const { ValidationError, BadRequestError } = require('../../utils/error-handler/error');
 const { authorizeUserNote } = require('../../middleware/authorize');
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
+const { generateNoteDto } = require('../../utils/helper/lib');
 const { default: mongoose } = require('mongoose');
 const defaultTag = 'general';
 const maxPageSize = 15;
@@ -36,18 +37,8 @@ router.post('/create', authenticate, [
             tag: tag || defaultTag
         })
 
-        // Increment `totalNotes` attribute of User
-        await User.findByIdAndUpdate(userID, { $inc: { totalNotes: 1 } });
-
         return res.status(httpStatusCode.SUCCESS).json({
-            note: {
-                id: note._id,
-                title: note.title,
-                description: note.description,
-                tag: note.tag,
-                lastModifiedOn: note.lastModifiedOn,
-                createdBy: note.createdBy
-            }
+            note: generateNoteDto(note)
         });
 
     } catch (error) {
@@ -80,14 +71,7 @@ router.put('/update/:noteID', authenticate, authorizeUserNote, [
         });
 
         return res.status(httpStatusCode.SUCCESS).json({
-            note: {
-                id: note._id,
-                title: note.title,
-                description: note.description,
-                tag: note.tag,
-                lastModifiedOn: note.lastModifiedOn,
-                createdBy: note.createdBy
-            }
+            note: generateNoteDto(note)
         });
 
     } catch (error) {
@@ -104,9 +88,6 @@ router.delete('/delete/:noteID', authenticate, authorizeUserNote, async (req, re
 
         // Delete the note using noteID
         await Note.findByIdAndDelete(noteID);
-
-        // Decrement `totalNotes` attribute of User
-        await User.findByIdAndUpdate(userID, { $inc: { totalNotes: -1 } });
 
         return res.status(httpStatusCode.SUCCESS).json({
             isNoteDeleted: true
@@ -128,14 +109,7 @@ router.get('/get/one/:noteID', authenticate, authorizeUserNote, async (req, res,
         const note = await Note.findById(noteID);
 
         return res.status(httpStatusCode.SUCCESS).json({
-            note: {
-                id: note._id,
-                title: note.title,
-                description: note.description,
-                tag: note.tag,
-                lastModifiedOn: note.lastModifiedOn,
-                createdBy: note.createdBy
-            }
+            note: generateNoteDto(note)
         });
 
     } catch (error) {
@@ -190,6 +164,10 @@ router.get('/get/all', authenticate, async (req, res, next) => {
                     createdBy: userID
                 }
             }, {
+                $sort: {
+                    lastModifiedOn: -1
+                }
+            }, {
                 $project: {
                     _id: 1,
                     title: {
@@ -210,32 +188,28 @@ router.get('/get/all', authenticate, async (req, res, next) => {
         ]);
 
         if (pageNumber === 0) {
-            const totalNotes = await Note.countDocuments([
-                {
-                    $match: {
-                        $or: [
-                            {
-                                title: {
-                                    $regex: searchKeyword,
-                                    $options: 'i'
-                                }
-                            }, {
-                                description: {
-                                    $regex: searchKeyword,
-                                    $options: 'i'
-                                }
-                            }, {
-                                tag: {
-                                    $regex: searchKeyword,
-                                    $options: 'i'
-                                }
-                            }
-                        ],
-                        createdBy: userID
+            const totalNotes = await Note.countDocuments({
+                $or: [
+                    {
+                        title: {
+                            $regex: searchKeyword,
+                            $options: 'i'
+                        }
+                    }, {
+                        description: {
+                            $regex: searchKeyword,
+                            $options: 'i'
+                        }
+                    }, {
+                        tag: {
+                            $regex: searchKeyword,
+                            $options: 'i'
+                        }
                     }
-                }
-            ]);
-            if (totalNotes > 0) {
+                ],
+                createdBy: userID
+            });
+            if (notes.length > 0) {
                 notes[0].totalNotes = totalNotes;
             }
         }

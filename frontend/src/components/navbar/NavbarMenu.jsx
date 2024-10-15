@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import authContext from "../context/auth/authContext";
+import authContext from "../../context/auth/authContext";
 import NavbarMenuItem from "./NavbarMenuItem";
 
 export default function NavbarMenu() {
@@ -11,6 +11,11 @@ export default function NavbarMenu() {
             {
                 user ? (
                     <>
+                        {
+                            user.isAdmin && (
+                                <NavbarMenuItem to={"/admin"}>Admin</NavbarMenuItem>
+                            )
+                        }
                         <NavbarMenuItem to={"/account"}>Account</NavbarMenuItem>
                         <NavbarMenuItem to={"/auth/logout"}>Logout</NavbarMenuItem>
                     </>

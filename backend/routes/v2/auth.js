@@ -15,6 +15,7 @@ const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
 const { generateJWT } = require('../../utils/helper/jwt');
+const { generateUserDto } = require('../../utils/helper/lib');
 const { sendMail, sendPasswordResetOtpMail, sendConfirmationMail, sendWelcomeMail } = require('../../utils/email/sendMail');
 const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
@@ -58,13 +59,7 @@ router.post('/register', [
 
         res.status(httpStatusCode.SUCCESS).json({
             authToken: token,
-            user: {
-                name: user.name,
-                email: user.email,
-                totalNotes: user.totalNotes,
-                isAdmin: user.isAdmin,
-                accountCreatedOn: user.accountCreatedOn
-            }
+            user: generateUserDto(user)
         });
 
     } catch (error) {
@@ -103,13 +98,7 @@ router.post('/login', [
 
         res.status(httpStatusCode.SUCCESS).json({
             authToken: token,
-            user: {
-                name: user.name,
-                email: user.email,
-                totalNotes: user.totalNotes,
-                isAdmin: user.isAdmin,
-                accountCreatedOn: user.accountCreatedOn
-            }
+            user: generateUserDto(user)
         });
 
     } catch (error) {

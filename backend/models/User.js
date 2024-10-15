@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    totalNotes: {
-        type: Number,
-        default: 0
+    isAdmin: {
+        type: Boolean,
+        default: false
     }
 });
 

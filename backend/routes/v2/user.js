@@ -16,6 +16,7 @@ const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
 const { generateJWT } = require('../../utils/helper/jwt');
+const { generateUserDto } = require('../../utils/helper/lib');
 const { sendMail } = require('../../utils/email/sendMail');
 const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
@@ -25,13 +26,7 @@ router.get('/authenticate', authenticate, async (req, res, next) => {
     try {
         // Authentication middleware will deal with authentication
         return res.status(httpStatusCode.SUCCESS).json({
-            user: {
-                name: req.user.name,
-                email: req.user.email,
-                totalNotes: req.user.totalNotes,
-                isAdmin: req.user.isAdmin,
-                accountCreatedOn: req.user.accountCreatedOn
-            }
+            user: generateUserDto(req.user)
         });
 
     } catch (error) {
@@ -40,7 +35,27 @@ router.get('/authenticate', authenticate, async (req, res, next) => {
 });
 
 
-// ROUTE: 2 => Update Name: PATCH '/api/v2/user/update/name'
+// ROUTE: 2 => Get user data: GET '/api/v2/user/get'
+router.get('/get', authenticate, async (req, res, next) => {
+    try {
+        // Extract UserID
+        const userID = req.user.id;
+
+        // Fetch count of total notes created by user
+        const totalNotes = await Note.countDocuments({ createdBy: userID });
+        req.user.totalNotes = totalNotes;
+
+        return res.status(httpStatusCode.SUCCESS).json({
+            user: generateUserDto(req.user)
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// ROUTE: 3 => Update Name: PATCH '/api/v2/user/update/name'
 router.patch('/update/name',
     authenticate,
     body('name', 'Enter a valid name').isLength({ min: 3 }),
@@ -53,13 +68,7 @@ router.patch('/update/name',
             const user = await User.findByIdAndUpdate(userID, { name: req.body.name });
 
             return res.status(httpStatusCode.SUCCESS).json({
-                user: {
-                    name: user.name,
-                    email: user.email,
-                    totalNotes: user.totalNotes,
-                    isAdmin: user.isAdmin,
-                    accountCreatedOn: user.accountCreatedOn
-                }
+                user: generateUserDto(user)
             });
 
         } catch (error) {
@@ -68,7 +77,7 @@ router.patch('/update/name',
     });
 
 
-// ROUTE: 3 => Delete User: DELETE '/api/v2/user/delete'
+// ROUTE: 4 => Delete User: POST '/api/v2/user/delete'
 router.delete('/delete',
     authenticate,
     body('password', 'Enter a valid password').isStrongPassword(),

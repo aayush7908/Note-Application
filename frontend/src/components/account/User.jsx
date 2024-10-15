@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import FormButton from "../FormButton";
-import { LoaderCircle, PencilLine, Save, SquareX } from "lucide-react";
-import { updateUserAPI } from "../../utils/api-calls/user";
+import { LoaderCircle, PencilLine, Save, SquareX, Trash2 } from "lucide-react";
 import alertContext from "../../context/alert/alertContext";
+import { validatePassword } from "../../utils/validation/validation-utils";
 
-export default function User({ user }) {
+export default function User({ title, user, updateFunc, deleteFunc }) {
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [isNameDisabled, setIsNameDisabled] = useState(true);
@@ -34,12 +34,35 @@ export default function User({ user }) {
         const formData = {
             name: name.current.value
         };
-        const { success, data, errors } = await updateUserAPI(formData);
+        const { success, data, errors } = await updateFunc(formData);
         if (success) {
             setIsNameDisabled((isNameDisabled) => (!isNameDisabled));
             createAlert("success", "Account Updated Successfully");
         } else {
             createAlert("danger", errors[0]);
+        }
+        setIsProcessing(false);
+    }
+
+    const handleDelete = async () => {
+        setIsProcessing(true);
+        const isDeleteConfirm = window.confirm("Do you want to delete Account ?");
+        if (isDeleteConfirm) {
+            const password = window.prompt("Enter your password: ");
+            const isPasswordValid = validatePassword(password);
+            if (isPasswordValid) {
+                const formData = {
+                    password: password
+                };
+                const { success, errors } = await deleteFunc(formData);
+                if (success) {
+                    createAlert("success", "Account Deleted Successfully");
+                } else {
+                    createAlert("danger", errors[0]);
+                }
+            } else {
+                createAlert("danger", "Enter a valid Password");
+            }
         }
         setIsProcessing(false);
     }
@@ -55,7 +78,7 @@ export default function User({ user }) {
         >
             <div className="grid justify-center">
                 <h1 className="text-2xl font-semibold underline underline-offset-2">
-                    Account Info.
+                    {title}
                 </h1>
             </div>
             <div className="grid">
@@ -84,6 +107,34 @@ export default function User({ user }) {
                 <input
                     id="email"
                     value={user.email}
+                    disabled={true}
+                    className="px-[1rem] py-[0.5rem] border-2 rounded-md"
+                />
+            </div>
+            <div className="grid">
+                <label
+                    htmlFor="totalNotes"
+                    className="font-medium"
+                >
+                    Total Notes
+                </label>
+                <input
+                    id="totalNotes"
+                    value={user.totalNotes}
+                    disabled={true}
+                    className="px-[1rem] py-[0.5rem] border-2 rounded-md"
+                />
+            </div>
+            <div className="grid">
+                <label
+                    htmlFor="accountCreatedOn"
+                    className="font-medium"
+                >
+                    Account Created On
+                </label>
+                <input
+                    id="accountCreatedOn"
+                    value={(new Date(user.accountCreatedOn)).toLocaleString()}
                     disabled={true}
                     className="px-[1rem] py-[0.5rem] border-2 rounded-md"
                 />
@@ -139,6 +190,19 @@ export default function User({ user }) {
                         </>
                     )
                 }
+                <FormButton
+                    type={"button"}
+                    disabled={isProcessing}
+                    handleClick={handleDelete}
+                >
+                    {
+                        isProcessing ? (
+                            <LoaderCircle className="animate-spin" />
+                        ) : (
+                            <Trash2 />
+                        )
+                    }
+                </FormButton>
             </div>
         </form>
     );

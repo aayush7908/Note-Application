@@ -18,7 +18,7 @@ router.get('/user/get/all', authenticate, authorizeAdmin, async (req, res, next)
             email: 1,
             name: 1,
             totalNotes: 1,
-            date: 1
+            accountCreatedOn: 1
         }).sort({ accountCreatedOn: -1 });
 
         return res.status(httpStatusCode.SUCCESS).json({

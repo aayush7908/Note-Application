@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import AuthContext from "./authContext";
-import { authenticateUserAPI, getUserProfileAPI, loginUserAPI, signupUserAPI } from "../../utils/api-calls/auth";
 
 const AuthState = (props) => {
 

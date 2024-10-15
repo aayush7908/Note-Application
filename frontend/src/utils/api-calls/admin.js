@@ -1,40 +1,93 @@
-import { error } from "../error-handler/error";
+import { getToken } from "../cookie/cookie-utils";
 
-const getAdminDataAPI = async () => {
-    let response;
+export const getAllUsersAPI = async () => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/admin/get-data`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/admin/user/get/all`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "authToken": localStorage.token
+                "Authorization": getToken()
             }
         });
-        response = await response.json();
+        const data = await res.json();
+
+        if (res.ok) {
+            return {
+                success: true,
+                data: data.users
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
     } catch (err) {
-        response = error(err);
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
     }
-    return response;
 }
 
-const removeUserAPI = async (userID) => {
-    let response;
+export const updateUserAPI = async (id, body) => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/admin/remove-user/${userID}`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/admin/user/update/name/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": getToken()
+            },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            return {
+                success: true
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
+    }
+}
+
+export const deleteUserAPI = async (id) => {
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/admin/user/delete/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                "authToken": localStorage.token
+                "Authorization": getToken()
             }
         });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
+        const data = await res.json();
 
-export {
-    getAdminDataAPI,
-    removeUserAPI
-};
+        if (res.ok) {
+            return {
+                success: true
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
+    }
+}
