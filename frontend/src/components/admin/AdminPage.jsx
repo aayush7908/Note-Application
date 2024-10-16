@@ -22,7 +22,12 @@ export default function AdminPage() {
             {
                 user && (
                     <div>
-                        <UserList />
+                        <div className="grid gap-[1rem]">
+                            <h1 className="text-2xl font-semibold pb-[0.5rem] border-b-2">
+                                All Users:
+                            </h1>
+                            <UserList />
+                        </div>
                     </div>
                 )
             }

@@ -23,9 +23,9 @@ export default function Info() {
                 </div>
                 <div>
                     <img
-                        src="images/notes.png"
+                        src="images/notes.webp"
                         draggable={false}
-                        className="lg:max-w-[40rem] rounded-xl"
+                        className="lg:max-w-[40rem] rounded-xl border-2"
                     />
                 </div>
             </div>
@@ -40,9 +40,9 @@ export default function Info() {
                 </div>
                 <div>
                     <img
-                        src="images/search.png"
+                        src="images/search.webp"
                         draggable={false}
-                        className="lg:max-w-[40rem] rounded-xl"
+                        className="lg:max-w-[40rem] rounded-xl border-2"
                     />
                 </div>
             </div>

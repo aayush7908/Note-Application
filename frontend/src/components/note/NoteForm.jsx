@@ -16,17 +16,17 @@ export default function NoteForm({ note }) {
 
     const validateFormData = () => {
         let error = "";
-        const isTitleValid = (title.current.value.length >= 10);
-        const isDescriptionValid = (description.current.value.length >= 10);
+        const isTitleValid = (title.current.value.length >= 3);
+        const isDescriptionValid = (description.current.value.length >= 5);
         const isTagValid = (tag.current.value.length <= 10);
         if (!isTitleValid) {
-            error += "\nEnter a valid Title (Length >= 10 characters)"
+            error += "\nTitle must contain atleast 3 characters"
         }
         if (!isDescriptionValid) {
-            error += "\nEnter a valid Description (Length >= 10 characters)"
+            error += "\nDescription must contain atleast 5 characters"
         }
         if (!isTagValid) {
-            error += "\nEnter a valid Tag (Length <= 10 characters)"
+            error += "\nTag can contain atmost 10 characters"
         }
         if (!isTitleValid || !isDescriptionValid || !isTagValid) {
             alert(error);
