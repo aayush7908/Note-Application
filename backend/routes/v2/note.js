@@ -171,7 +171,7 @@ router.get('/get/all', authenticate, async (req, res, next) => {
                 $project: {
                     _id: 1,
                     title: {
-                        $substr: ['$title', 0, 20]
+                        $substr: ['$title', 0, 25]
                     },
                     description: {
                         $substr: ['$description', 0, 100]

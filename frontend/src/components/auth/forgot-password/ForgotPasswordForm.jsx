@@ -272,7 +272,7 @@ export default function ForgotPasswordForm() {
                             isProcessing ? (
                                 <LoaderCircle className="animate-spin" />
                             ) : (
-                                <span>Register</span>
+                                <span>Reset Password</span>
                             )
                         }
                     </FormButton>
