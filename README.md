@@ -54,7 +54,7 @@ To stop these containers, you can use the command:
 docker-compose down
 ```
 
-
+<!---
 ## Features
 
 1. Centralized Error Handler:
@@ -91,3 +91,4 @@ docker-compose down
  
 5. Remember Me Option:
     - While logging in, if the user checks this option, he need not login again for net 30 days. He will be directly logged in.
+--->
