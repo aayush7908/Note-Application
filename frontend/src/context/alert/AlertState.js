@@ -4,7 +4,7 @@ import AlertContext from "./alertContext";
 const AlertState = (props) => {
     const [alert, setAlert] = useState(null);
 
-    const createAlert = (type, msg) => {
+    const createAlert = async (type, msg) => {
         const newAlert = {
             type: type,
             msg: msg

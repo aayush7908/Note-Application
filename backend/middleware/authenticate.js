@@ -12,27 +12,31 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const authenticate = async (req, res, next) => {
     try {
         // Fetch token from the request header and if it doesnot exist deny the access
-        const token = req.header('authToken');
-        if (token === "undefined") {
+        const authToken = req.header('Authorization');
+        if (!authToken) {
             throw new UnauthorizedAccessError();
         }
 
+        // Extract jwtToken from authToken (Remove `Bearer `)
+        const jwtToken = authToken.substring(7);
+
         // Extract payload from the token
-        const payload = jwt.verify(token, JWT_SECRET);
+        const payload = jwt.verify(jwtToken, JWT_SECRET);
 
         // Validate token expiry
-        if ((new Date()) > (new Date(payload.expiresAt))) {
+        if (Date.now() >= payload.expiresOn) {
             throw new UnauthorizedAccessError();
         }
 
         // Check if user exists
-        const user = await User.findById(payload.user.id, { password: 0, __v: 0 });
+        const user = await User.findById(payload.user.id, { __v: 0 });
         if (user === null) {
             throw new UnauthorizedAccessError();
         }
         req.user = user;
 
         next();
+
     } catch (error) {
         next(error);
     }

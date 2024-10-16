@@ -6,7 +6,7 @@ const generateToken = (email) => {
     return {
         userEmail: email,
         token: token,
-        expiresOn: new Date(Date.now() + VALID_PWD_RESET_TOKEN_DURATION)
+        expiresOn: Date.now() + VALID_PWD_RESET_TOKEN_DURATION
     };
 }
 

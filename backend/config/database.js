@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { sendErrorMail } = require('../utils/emailjs/sendMail');
+const { sendErrorMail } = require('../utils/email/sendMail');
 
 const connectToDatabase = async () => {
     try {
@@ -7,7 +7,7 @@ const connectToDatabase = async () => {
         console.log("Connected to database");
     } catch(err) {
         console.log("Couldnot connect to database !!!");
-        await sendErrorMail("DatabaseConnectionError", err.stack);
+        sendErrorMail("DatabaseConnectionError", err.stack);
     }
 };
 

@@ -7,7 +7,7 @@ const generateJWT = (userID) => {
         user: {
             id: userID
         },
-        expiresAt: new Date(Date.now() + VALID_TOKEN_DURATION)
+        expiresOn: Date.now() + VALID_TOKEN_DURATION
     }
     return jwt.sign(payload, JWT_SECRET);
 };

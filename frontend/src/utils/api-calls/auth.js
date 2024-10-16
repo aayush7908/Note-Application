@@ -1,76 +1,160 @@
-import { error } from "../error-handler/error";
+import { getPasswordResetToken, removePasswordResetToken, savePasswordResetToken, saveToken } from '../cookie/cookie-utils';
 
-const authenticateUserAPI = async () => {
-    let response;
+export const registerUserAPI = async (body) => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/authenticate-user`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
-        });
-        response = await response.json();
-    } catch (err) {
-        response = error(err);
-    }
-    return response;
-}
-
-const loginUserAPI = async (credentials) => {
-    let response;
-    try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(body)
         });
-        response = await response.json();
+        const data = await res.json();
+
+        if (res.ok) {
+            saveToken(data.authToken);
+            return {
+                success: true,
+                data: data.user
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
     } catch (err) {
-        response = error(err);
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
     }
-    return response;
 }
 
-const signupUserAPI = async (credentials) => {
-    let response;
+export const loginUserAPI = async (body) => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/signup`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(credentials)
+            body: JSON.stringify(body)
         });
-        response = await response.json();
-    } catch(err) {
-        response = error(err);
+        const data = await res.json();
+
+        if (res.ok) {
+            saveToken(data.authToken);
+            return {
+                success: true,
+                data: data.user
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
     }
-    return response;
 }
 
-const getUserProfileAPI = async () => {
-    let response;
+export const sendOtpAPI = async (body) => {
     try {
-        response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/get-user`, {
-            method: "GET",
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/forgot-password/otp/send`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            return {
+                success: true
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
+    }
+}
+
+export const verifyOtpAPI = async (body) => {
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/forgot-password/otp/verify`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            savePasswordResetToken(data.token);
+            return {
+                success: true
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
+    }
+}
+
+export const resetPasswordAPI = async (body) => {
+    try {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/forgot-password/reset-password`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "authToken": localStorage.token
-            }
+                "Authorization": getPasswordResetToken()
+            },
+            body: JSON.stringify(body)
         });
-        response = await response.json();
-    } catch(err) {
-        response = error(err);
-    }
-    return response;
-}
+        const data = await res.json();
 
-export { 
-    authenticateUserAPI, 
-    loginUserAPI, 
-    signupUserAPI, 
-    getUserProfileAPI
-};
+        if (res.ok) {
+            savePasswordResetToken(data.token);
+            return {
+                success: true
+            }
+        }
+
+        return {
+            success: false,
+            errors: data.errors
+        }
+
+    } catch (err) {
+        return {
+            success: false,
+            errors: ["Something Went Wrong !!!"]
+        }
+    } finally {
+        removePasswordResetToken();
+    }
+}

@@ -16,13 +16,13 @@ class UnauthorizedAccessError extends BaseError {
 }
 
 class ValidationError extends BaseError {
-    constructor(description = 'Invalid Data Supplied') {
+    constructor(description = 'Invalid Data') {
         super(httpStatusCode.INVALID_DATA, description);
     }
 }
 
 class DuplicateDataError extends BaseError {
-    constructor(description = 'Duplicate Data Supplied') {
+    constructor(description = 'Duplicate Data') {
         super(httpStatusCode.DUPLICATE_DATA, description);
     }
 }

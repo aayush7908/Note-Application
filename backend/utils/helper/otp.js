@@ -9,7 +9,7 @@ const generateOTP = (email) => {
     return {
         userEmail: email,
         otp: otp,
-        expiresOn: new Date(Date.now() + VALID_OTP_DURATION)
+        expiresOn: Date.now() + VALID_OTP_DURATION
     };
 }
 

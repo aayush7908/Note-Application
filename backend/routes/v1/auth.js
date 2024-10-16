@@ -11,7 +11,7 @@ const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
 const { generateJWT } = require('../../utils/helper/jwt');
-const { sendMail } = require('../../utils/emailjs/sendMail');
+const { sendMail } = require('../../utils/email/sendMail');
 const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
 // ROUTE: 1 => Register a new User using: POST '/api/auth/signup'.
@@ -187,7 +187,7 @@ router.post('/verify-otp', [body('email', 'Enter a valid email address').isEmail
 });
 
 // ROUTE: 7 => Reset Password: POST '/api/auth/reset-password'
-router.post('/reset-password', [body('email', 'Enter a valid email address').isEmail(), body('password', 'Enter a valid password').isStrongPassword()], async (req, res, next) => {
+router.post('/reset-password', body('password', 'Enter a valid password').isStrongPassword(), async (req, res, next) => {
     try {
         // Throw error if data is not valid
         const errors = validationResult(req);
@@ -196,7 +196,7 @@ router.post('/reset-password', [body('email', 'Enter a valid email address').isE
         }
 
         // Extract token from request header
-        const reqToken = req.header('passwordResetToken');
+        const reqToken = req.body.token;
         if (reqToken === "undefined") {
             throw new UnauthorizedAccessError();
         }
