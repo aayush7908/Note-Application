@@ -22,6 +22,7 @@ import AccountPage from './components/account/AccountPage';
 import LogoutPage from './components/auth/logout/LogoutPage';
 import AdminPage from './components/admin/AdminPage';
 import NotFound from './components/NotFound';
+import ForgotPasswordPage from './components/auth/forgot-password/ForgotPasswordPage';
 
 function App() {
 
@@ -62,6 +63,7 @@ function App() {
 								<Route exact path="/" element={<HomePage />} />
 								<Route exact path="/auth/login" element={<LoginPage />} />
 								<Route exact path="/auth/register" element={<RegisterPage />} />
+								<Route exact path="/auth/forgot-password" element={<ForgotPasswordPage />} />
 								<Route exact path="/auth/logout" element={<LogoutPage />} />
 								<Route exact path="/note/create" element={<NoteCreatePage />} />
 								<Route exact path="/note/view/:id" element={<NoteViewPage />} />

@@ -11,7 +11,7 @@ export default function AdminPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user && !user.isAdmin) {
+        if (!user || !user.isAdmin) {
             navigate("/");
             createAlert("danger", "Access Denied");
         }

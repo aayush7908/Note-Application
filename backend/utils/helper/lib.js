@@ -16,7 +16,8 @@ const generateNoteDto = (note) => {
         description: note.description,
         tag: note.tag,
         lastModifiedOn: note.lastModifiedOn,
-        createdBy: note.createdBy
+        createdBy: note.createdBy,
+        totalNotes: note.totalNotes || 0
     };
 }
 

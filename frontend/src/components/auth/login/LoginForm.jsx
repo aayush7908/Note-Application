@@ -5,7 +5,7 @@ import authContext from "../../../context/auth/authContext";
 import alertContext from "../../../context/alert/alertContext";
 import { loginUserAPI } from "../../../utils/api-calls/auth";
 import { validateEmail, validatePassword } from "../../../utils/validation/validation-utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
 
@@ -123,6 +123,14 @@ export default function LoginForm() {
                         )
                     }
                 </FormButton>
+            </div>
+            <div>
+                <Link
+                    to={"/auth/forgot-password"}
+                    className="underline-offset-2 hover:underline text-blue-700"
+                >
+                    Forgot Password ?
+                </Link>
             </div>
         </form>
     );

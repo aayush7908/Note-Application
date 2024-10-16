@@ -214,8 +214,15 @@ router.get('/get/all', authenticate, async (req, res, next) => {
             }
         }
 
+        // Generate noteDtos out of notes
+        const noteDtos = notes.map((note) => {
+            return (
+                generateNoteDto(note)
+            )
+        });
+
         return res.status(httpStatusCode.SUCCESS).json({
-            notes: notes
+            notes: noteDtos
         });
 
     } catch (error) {

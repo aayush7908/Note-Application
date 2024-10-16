@@ -21,10 +21,11 @@ export default function RegisterForm() {
 
     const validateFormData = () => {
         let error = "";
-        const isNameValid = (name.current.value.length >= 3);
+        const isName = (name.current.value.length >= 3);
         const isEmailValid = validateEmail(email.current.value);
-        const isPasswordValid = validatePassword(password.current.value) && (password.current.value === confirmPassword.current.value);
-        if (!isNameValid) {
+        const isPasswordValid = validatePassword(password.current.value);
+        const isPasswordMatch = (password.current.value === confirmPassword.current.value);
+        if (!isName) {
             error += "\nEnter a valid Name (Length >= 3 characters)"
         }
         if (!isEmailValid) {
@@ -33,7 +34,10 @@ export default function RegisterForm() {
         if (!isPasswordValid) {
             error += "\nEnter a valid Password"
         }
-        if (!isNameValid || !isEmailValid || !isPasswordValid) {
+        if (!isPasswordMatch) {
+            error += "\Passwords donot match"
+        }
+        if (!isName || !isEmailValid || !isPasswordValid || !isPasswordMatch) {
             alert(error);
             return false;
         }

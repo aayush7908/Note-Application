@@ -4,6 +4,7 @@ const User = require('../../models/User');
 const authenticate = require('../../middleware/authenticate');
 const { authorizeAdmin } = require('../../middleware/authorize');
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
+const { generateUserDto } = require('../../utils/helper/lib');
 const Note = require('../../models/Note');
 
 
@@ -17,12 +18,18 @@ router.get('/user/get/all', authenticate, authorizeAdmin, async (req, res, next)
             id: 1,
             email: 1,
             name: 1,
-            totalNotes: 1,
             accountCreatedOn: 1
         }).sort({ accountCreatedOn: -1 });
 
+        // Make userDtos out of users
+        const userDtos = users.map((user) => {
+            return (
+                generateUserDto(user)
+            )
+        });
+
         return res.status(httpStatusCode.SUCCESS).json({
-            users: users
+            users: userDtos
         });
 
     } catch (error) {

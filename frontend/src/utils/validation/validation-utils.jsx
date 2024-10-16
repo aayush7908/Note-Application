@@ -8,3 +8,7 @@ export function validateEmail(email) {
 export function validatePassword(password) {
     return passwordRegex.test(password);
 }
+
+export function validateOtp(otp) {
+    return (otp.length === 8);
+}
