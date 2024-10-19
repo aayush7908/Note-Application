@@ -70,7 +70,7 @@ export default function RegisterForm() {
     return (
         <form
             onSubmit={handleSubmit}
-            className="min-w-[20rem] flex flex-col gap-[1rem] p-[2rem] border-2 rounded-lg"
+            className="w-[30rem] flex flex-col gap-[1rem] p-[2rem] border-2 rounded-lg"
         >
             <div className="grid justify-center">
                 <h1 className="text-2xl font-semibold underline underline-offset-2">Register</h1>

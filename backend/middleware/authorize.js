@@ -34,7 +34,7 @@ const authorizeAdmin = async (req, res, next) => {
         if (!user.isAdmin) {
             sendErrorMail(
                 'Unauthorized Admin Access',
-                `Someone tried to access admin panel<br /><b>Name:</b> ${user.name}<br /><b>Email:</b> ${user.email}`
+                `Someone tried to access admin panel<br /><b>Name:</b> ${user.name}<br /><b>Email:</b> ${user.email}<br /><b>Date-Time:</b> ${(new Date()).toLocaleString()}`
             );
             throw new UnauthorizedAccessError();
         }

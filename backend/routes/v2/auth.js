@@ -4,7 +4,6 @@ const { body, validationResult } = require('express-validator');
 const User = require('../../models/User');
 const OTP = require('../../models/OTP');
 const PasswordResetToken = require('../../models/PasswordResetToken');
-const authenticate = require('../../middleware/authenticate');
 const {
     UnauthorizedAccessError,
     DuplicateDataError,
@@ -16,8 +15,11 @@ const { generateOTP } = require('../../utils/helper/otp');
 const { generateToken } = require('../../utils/helper/token');
 const { generateJWT } = require('../../utils/helper/jwt');
 const { generateUserDto } = require('../../utils/helper/lib');
-const { sendMail, sendPasswordResetOtpMail, sendConfirmationMail, sendWelcomeMail } = require('../../utils/email/sendMail');
-const validationTimeLimit = 1000 * 60 * 10; // 10 mins
+const {
+    sendPasswordResetOtpMail,
+    sendConfirmationMail,
+    sendWelcomeMail
+} = require('../../utils/email/sendMail');
 
 
 // ROUTE: 1 => Register a new User: POST '/api/v2/auth/register'.

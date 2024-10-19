@@ -10,7 +10,6 @@ connectToDatabase();
 app.use(cors({ origin: ["http://localhost:3000", process.env.FRONTEND_DOMAIN_URL] }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', require('./routes/v1'));
 app.use('/api', require('./routes/v2'));
 app.use(centralizedErrorHandler);
 

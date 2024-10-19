@@ -1,9 +1,8 @@
 import React, { useContext, useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import FormButton from "../../FormButton";
-import authContext from "../../../context/auth/authContext";
 import alertContext from "../../../context/alert/alertContext";
-import { loginUserAPI, registerUserAPI, resetPasswordAPI, sendOtpAPI, verifyOtpAPI } from "../../../utils/api-calls/auth";
+import { resetPasswordAPI, sendOtpAPI, verifyOtpAPI } from "../../../utils/api-calls/auth";
 import { validateEmail, validateOtp, validatePassword } from "../../../utils/validation/validation-utils";
 import { useNavigate } from "react-router-dom";
 
@@ -21,54 +20,6 @@ export default function ForgotPasswordForm() {
     const { createAlert } = useContext(alertContext);
     const navigate = useNavigate();
 
-    // const validateFormData = () => {
-    //     let error = "";
-    //     const isOtpValid = (otp.current.value.length >= 3);
-    //     const isEmailValid = validateEmail(email.current.value);
-    //     const isPasswordValid = validatePassword(password.current.value);
-    //     const isPasswordMatch = (password.current.value === confirmPassword.current.value);
-    //     if (!isOtpValid) {
-    //         error += "\nEnter a valid OTP"
-    //     }
-    //     if (!isEmailValid) {
-    //         error += "\nEnter a valid Email Address"
-    //     }
-    //     if (!isPasswordValid) {
-    //         error += "\nEnter a valid Password"
-    //     }
-    //     if (!isPasswordMatch) {
-    //         error += "\Passwords donot match"
-    //     }
-    //     if (!isOtpValid || !isEmailValid || !isPasswordValid || !isPasswordMatch) {
-    //         alert(error);
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        //     const isDataValid = validateFormData();
-        //     if (!isDataValid) {
-        //         return;
-        //     }
-        //     setIsProcessing(true);
-        //     const formData = {
-        //         name: otp.current.value,
-        //         email: email.current.value,
-        //         password: password.current.value
-        //     };
-        //     const { success, data, errors } = await registerUserAPI(formData);
-        //     if (success) {
-        //         authenticateUser(data);
-        //         navigate("/");
-        //         createAlert("success", "Account Created Successfully");
-        //     } else {
-        //         createAlert("danger", errors[0]);
-        //     }
-        //     setIsProcessing(false);
-    }
-
     const handleEmailSubmit = async (event) => {
         event.preventDefault();
         const isEmailValid = validateEmail(email.current.value);
@@ -84,7 +35,7 @@ export default function ForgotPasswordForm() {
         if (success) {
             setIsEmailSectionVisible(false);
             setIsOtpSectionVisible(true);
-            createAlert("success", "OTP Sent to your Email");
+            createAlert("success", "OTP sent to your Email");
         } else {
             createAlert("danger", errors[0]);
         }
@@ -125,7 +76,7 @@ export default function ForgotPasswordForm() {
         if (!isPasswordMatch) {
             error += "\Passwords donot match"
         }
-        if(!isPasswordValid || !isPasswordMatch) {
+        if (!isPasswordValid || !isPasswordMatch) {
             alert(error);
             return;
         }
@@ -146,16 +97,20 @@ export default function ForgotPasswordForm() {
     }
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className={`min-w-[20rem] flex flex-col gap-[1rem] p-[2rem] border-2 rounded-lg`}
-        >
+        <div className={`w-[30rem] flex flex-col gap-[1rem] p-[2rem] border-2 rounded-lg`}>
+
+            {/* HEADING */}
             <div className="grid justify-center">
                 <h1 className="text-2xl font-semibold underline underline-offset-2">
                     Reset Password
                 </h1>
             </div>
-            <div className={`grid gap-[1rem] ${!isEmailSectionVisible && "hidden"}`}>
+
+            {/* EMAIL FORM */}
+            <form
+                onSubmit={handleEmailSubmit}
+                className={`grid gap-[1rem] ${!isEmailSectionVisible && "hidden"}`}
+            >
                 <div className="grid">
                     <label
                         htmlFor="email"
@@ -169,11 +124,12 @@ export default function ForgotPasswordForm() {
                         placeholder="john@gmail.com"
                         ref={email}
                         className="px-[1rem] py-[0.5rem] border-2 rounded-md"
+                        autoFocus={true}
                     />
                 </div>
                 <div className="flex justify-center">
                     <FormButton
-                        type={"button"}
+                        disabled={isProcessing}
                         handleClick={handleEmailSubmit}
                     >
                         {
@@ -185,8 +141,13 @@ export default function ForgotPasswordForm() {
                         }
                     </FormButton>
                 </div>
-            </div>
-            <div className={`grid gap-[1rem] ${!isOtpSectionVisible && "hidden"}`}>
+            </form>
+
+            {/* OTP FORM */}
+            <form
+                onSubmit={handleOtpSubmit}
+                className={`grid gap-[1rem] ${!isOtpSectionVisible && "hidden"}`}
+            >
                 <div className="grid">
                     <label
                         htmlFor="otp"
@@ -199,11 +160,11 @@ export default function ForgotPasswordForm() {
                         type="text"
                         ref={otp}
                         className="px-[1rem] py-[0.5rem] border-2 rounded-md"
+                        autoFocus={true}
                     />
                 </div>
                 <div className="flex justify-center">
                     <FormButton
-                        type={"button"}
                         disabled={isProcessing}
                         handleClick={handleOtpSubmit}
                     >
@@ -216,8 +177,21 @@ export default function ForgotPasswordForm() {
                         }
                     </FormButton>
                 </div>
-            </div>
-            <div className={`grid gap-[1rem] ${!isPasswordSectionVisible && "hidden"}`}>
+                <div>
+                    <p>
+                        <b>NOTE: </b>
+                        <span>An email containing OTP has been sent to your Email Address. It might take upto </span>
+                        <b>5 minutes</b>
+                        <span> for the email to arrive. Please be patient.</span>
+                    </p>
+                </div>
+            </form>
+
+            {/* PASSWORD FORM */}
+            <form
+                onSubmit={handlePasswordSubmit}
+                className={`grid gap-[1rem] ${!isPasswordSectionVisible && "hidden"}`}
+            >
                 <div className="grid gap-[1rem]">
                     <div className="grid">
                         <label
@@ -231,6 +205,7 @@ export default function ForgotPasswordForm() {
                             type={isPasswordVisible ? "text" : "password"}
                             ref={password}
                             className="px-[1rem] py-[0.5rem] border-2 rounded-md"
+                            autoFocus={true}
                         />
                     </div>
                     <div className="grid">
@@ -264,7 +239,6 @@ export default function ForgotPasswordForm() {
                 </div>
                 <div className="flex justify-center">
                     <FormButton
-                        type={"button"}
                         disabled={isProcessing}
                         handleClick={handlePasswordSubmit}
                     >
@@ -277,7 +251,8 @@ export default function ForgotPasswordForm() {
                         }
                     </FormButton>
                 </div>
-            </div>
-        </form>
+            </form>
+
+        </div>
     );
 }
