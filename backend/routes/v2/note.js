@@ -1,13 +1,14 @@
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const Note = require('../../models/Note');
-const User = require('../../models/User');
 const authenticate = require('../../middleware/authenticate');
-const { ValidationError, BadRequestError } = require('../../utils/error-handler/error');
+const {
+    ValidationError,
+    BadRequestError
+} = require('../../utils/error-handler/error');
 const { authorizeUserNote } = require('../../middleware/authorize');
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
 const { generateNoteDto } = require('../../utils/helper/lib');
-const { default: mongoose } = require('mongoose');
 const defaultTag = 'general';
 const maxPageSize = 15;
 

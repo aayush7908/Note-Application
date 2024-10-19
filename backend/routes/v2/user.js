@@ -3,22 +3,13 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const User = require('../../models/User');
 const Note = require('../../models/Note');
-const OTP = require('../../models/OTP');
-const PasswordResetToken = require('../../models/PasswordResetToken');
 const authenticate = require('../../middleware/authenticate');
 const {
     UnauthorizedAccessError,
-    DuplicateDataError,
-    ValidationError,
-    NotFoundError
+    ValidationError
 } = require('../../utils/error-handler/error');
 const { httpStatusCode } = require('../../utils/error-handler/httpStatusCodes');
-const { generateOTP } = require('../../utils/helper/otp');
-const { generateToken } = require('../../utils/helper/token');
-const { generateJWT } = require('../../utils/helper/jwt');
 const { generateUserDto } = require('../../utils/helper/lib');
-const { sendMail } = require('../../utils/email/sendMail');
-const validationTimeLimit = 1000 * 60 * 10; // 10 mins
 
 
 // ROUTE: 1 => Authenticate user by JWT Token: GET '/api/v2/user/authenticate'
