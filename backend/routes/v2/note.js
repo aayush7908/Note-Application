@@ -120,6 +120,32 @@ router.get('/get/one/:noteID', authenticate, authorizeUserNote, async (req, res,
 
 
 // ROUTE: 5 => Get All Notes with Search Query: GET '/api/v2/note/get/all'
+const getSearchQuery = (searchKeyword, userID) => {
+    return searchKeyword === '' ? {
+        createdBy: userID
+    } : {
+        $or: [
+            {
+                title: {
+                    $regex: searchKeyword,
+                    $options: 'i'
+                }
+            }, {
+                description: {
+                    $regex: searchKeyword,
+                    $options: 'i'
+                }
+            }, {
+                tag: {
+                    $regex: searchKeyword,
+                    $options: 'i'
+                }
+            }
+        ],
+        createdBy: userID
+    };
+}
+
 router.get('/get/all', authenticate, async (req, res, next) => {
     try {
         // Get authenticated user
@@ -140,30 +166,13 @@ router.get('/get/all', authenticate, async (req, res, next) => {
             throw new BadRequestError('Invalid Page Size');
         }
 
+        // generate search query
+        const searchQuery = getSearchQuery(searchKeyword, userID);
+
         // Fetch notes created by the authenticated user
         const notes = await Note.aggregate([
             {
-                $match: {
-                    $or: [
-                        {
-                            title: {
-                                $regex: searchKeyword,
-                                $options: 'i'
-                            }
-                        }, {
-                            description: {
-                                $regex: searchKeyword,
-                                $options: 'i'
-                            }
-                        }, {
-                            tag: {
-                                $regex: searchKeyword,
-                                $options: 'i'
-                            }
-                        }
-                    ],
-                    createdBy: userID
-                }
+                $match: searchQuery
             }, {
                 $sort: {
                     lastModifiedOn: -1
@@ -189,27 +198,7 @@ router.get('/get/all', authenticate, async (req, res, next) => {
         ]);
 
         if (pageNumber === 0) {
-            const totalNotes = await Note.countDocuments({
-                $or: [
-                    {
-                        title: {
-                            $regex: searchKeyword,
-                            $options: 'i'
-                        }
-                    }, {
-                        description: {
-                            $regex: searchKeyword,
-                            $options: 'i'
-                        }
-                    }, {
-                        tag: {
-                            $regex: searchKeyword,
-                            $options: 'i'
-                        }
-                    }
-                ],
-                createdBy: userID
-            });
+            const totalNotes = await Note.countDocuments(searchQuery);
             if (notes.length > 0) {
                 notes[0].totalNotes = totalNotes;
             }
