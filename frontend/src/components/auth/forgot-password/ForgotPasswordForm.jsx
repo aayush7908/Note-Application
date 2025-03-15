@@ -1,10 +1,12 @@
 import React, { useContext, useRef, useState } from "react";
-import { LoaderCircle } from "lucide-react";
-import FormButton from "../../FormButton";
-import alertContext from "../../../context/alert/alertContext";
-import { resetPasswordAPI, sendOtpAPI, verifyOtpAPI } from "../../../utils/api-calls/auth";
-import { validateEmail, validateOtp, validatePassword } from "../../../utils/validation/validation-utils";
 import { useNavigate } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
+
+import { resetPasswordService, sendOtpService, verifyOtpService } from "services/auth";
+import alertContext from "context/alert/alertContext";
+import { validateEmail, validateOtp, validatePassword } from "utils/validation";
+
+import FormButton from "components/FormButton";
 
 export default function ForgotPasswordForm() {
 
@@ -31,7 +33,7 @@ export default function ForgotPasswordForm() {
         const formData = {
             email: email.current.value
         };
-        const { success, data, errors } = await sendOtpAPI(formData);
+        const { success, data, errors } = await sendOtpService(formData);
         if (success) {
             setIsEmailSectionVisible(false);
             setIsOtpSectionVisible(true);
@@ -54,7 +56,7 @@ export default function ForgotPasswordForm() {
             email: email.current.value,
             otp: otp.current.value
         };
-        const { success, data, errors } = await verifyOtpAPI(formData);
+        const { success, data, errors } = await verifyOtpService(formData);
         if (success) {
             setIsOtpSectionVisible(false);
             setIsPasswordSectionVisible(true);
@@ -86,7 +88,7 @@ export default function ForgotPasswordForm() {
             password: password.current.value,
             confirmPassword: confirmPassword.current.value
         };
-        const { success, data, errors } = await resetPasswordAPI(formData);
+        const { success, data, errors } = await resetPasswordService(formData);
         if (success) {
             navigate("/auth/login");
             createAlert("success", "Password Changed");

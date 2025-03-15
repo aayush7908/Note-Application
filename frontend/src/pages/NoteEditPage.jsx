@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getNoteAPI } from "../../../utils/api-calls/note";
-import alertContext from "../../../context/alert/alertContext";
-import Loader from "../../Loader";
-import DataNotFound from "../../DataNotFound";
-import NoteForm from "../NoteForm";
+
+import { getNoteService } from "services/note";
+import alertContext from "context/alert/alertContext";
+
+import Loader from "components/Loader";
+import DataNotFound from "components/DataNotFound";
+import NoteForm from "components/note/NoteForm";
 
 export default function NoteEditPage() {
 
@@ -16,7 +18,7 @@ export default function NoteEditPage() {
     useEffect(() => {
         (async () => {
             setIsProcessing(true);
-            const { success, data, errors } = await getNoteAPI(id);
+            const { success, data, errors } = await getNoteService(id);
             if (success) {
                 setNote(data);
             } else {

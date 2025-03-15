@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { deleteUserAPI, getUserAPI, updateUserAPI } from "../../utils/api-calls/user";
-import alertContext from "../../context/alert/alertContext";
-import User from "./User";
-import Loader from "../Loader";
-import DataNotFound from "../DataNotFound";
+
+import { deleteUserService, getUserService, updateUserNameService } from "services/user";
+import alertContext from "context/alert/alertContext";
+
+import User from "components/account/User";
+import Loader from "components/Loader";
+import DataNotFound from "components/DataNotFound";
 
 export default function AccountPage() {
 
@@ -12,17 +14,17 @@ export default function AccountPage() {
     const { createAlert } = useContext(alertContext);
 
     const updateFunc = async (formData) => {
-        return await updateUserAPI(formData);
+        return await updateUserNameService(formData);
     }
 
     const deleteFunc = async (formData) => {
-        return await deleteUserAPI(formData);
+        return await deleteUserService(formData);
     }
 
     useEffect(() => {
         (async () => {
             setIsProcessing(true);
-            const { success, data, errors } = await getUserAPI();
+            const { success, data, errors } = await getUserService();
             if (success) {
                 setUser(data);
             } else {

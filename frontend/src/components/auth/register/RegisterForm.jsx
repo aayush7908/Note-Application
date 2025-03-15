@@ -1,11 +1,13 @@
 import React, { useContext, useRef, useState } from "react";
-import { LoaderCircle } from "lucide-react";
-import FormButton from "../../FormButton";
-import authContext from "../../../context/auth/authContext";
-import alertContext from "../../../context/alert/alertContext";
-import { registerUserAPI } from "../../../utils/api-calls/auth";
-import { validateEmail, validatePassword } from "../../../utils/validation/validation-utils";
 import { useNavigate } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
+
+import { registerUserService } from "services/auth";
+import authContext from "context/auth/authContext";
+import alertContext from "context/alert/alertContext";
+import { validateEmail, validatePassword } from "utils/validation";
+
+import FormButton from "components/FormButton";
 
 export default function RegisterForm() {
 
@@ -56,7 +58,7 @@ export default function RegisterForm() {
             email: email.current.value,
             password: password.current.value
         };
-        const { success, data, errors } = await registerUserAPI(formData);
+        const { success, data, errors } = await registerUserService(formData);
         if (success) {
             authenticateUser(data);
             navigate("/");

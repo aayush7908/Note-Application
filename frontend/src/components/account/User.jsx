@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import FormButton from "../FormButton";
 import { LoaderCircle, PencilLine, Save, SquareX, Trash2 } from "lucide-react";
-import alertContext from "../../context/alert/alertContext";
-import { validatePassword } from "../../utils/validation/validation-utils";
+
+import alertContext from "context/alert/alertContext";
+import { validatePassword } from "utils/validation";
+
+import FormButton from "components/FormButton";
 
 export default function User({ title, user, updateFunc, deleteFunc }) {
 

@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import NotesImage from "assets/images/notes.webp";
+import SearchImage from "assets/images/search.webp";
+
 export default function Info() {
     return (
         <div className="grid gap-[2rem]">
@@ -23,7 +26,7 @@ export default function Info() {
                 </div>
                 <div>
                     <img
-                        src="images/notes.webp"
+                        src={NotesImage}
                         draggable={false}
                         className="lg:max-w-[40rem] rounded-xl border-2"
                     />
@@ -40,7 +43,7 @@ export default function Info() {
                 </div>
                 <div>
                     <img
-                        src="images/search.webp"
+                        src={SearchImage}
                         draggable={false}
                         className="lg:max-w-[40rem] rounded-xl border-2"
                     />

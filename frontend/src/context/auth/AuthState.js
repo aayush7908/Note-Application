@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AuthContext from "./authContext";
+import AuthContext from "context/auth/authContext";
 
 const AuthState = (props) => {
 

@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSearchParams } from "react-router-dom";
-import Note from "./Note";
-import { getAllNotesAPI } from "../../utils/api-calls/note"
-import authContext from "../../context/auth/authContext";
-import alertContext from "../../context/alert/alertContext";
-import Loader from "../Loader";
-import DataNotFound from "../DataNotFound";
-import SearchForm from "./SearchForm";
+
+import { getAllNotesService } from "services/note"
+import authContext from "context/auth/authContext";
+import alertContext from "context/alert/alertContext";
+
+import SearchForm from "components/home/SearchForm";
+import Note from "components/home/Note";
+import Loader from "components/Loader";
+import DataNotFound from "components/DataNotFound";
 
 export default function NoteInfiniteScroll() {
 
@@ -20,7 +22,7 @@ export default function NoteInfiniteScroll() {
     const [searchParams] = useSearchParams();
 
     const fetchFunction = async () => {
-        const { success, data, errors } = await getAllNotesAPI(pageNumber, searchParams.get("searchKeyword") || "");
+        const { success, data, errors } = await getAllNotesService(pageNumber, searchParams.get("searchKeyword") || "");
         if (success) {
             return data;
         }

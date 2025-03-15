@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import { Search } from "lucide-react";
 
 export default function SearchForm() {
 

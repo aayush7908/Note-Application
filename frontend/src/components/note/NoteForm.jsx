@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoaderCircle, Save, SquareX } from "lucide-react";
-import FormButton from "../FormButton";
-import alertContext from "../../context/alert/alertContext";
-import { createNoteAPI, updateNoteAPI } from "../../utils/api-calls/note";
+
+import { createNoteService, updateNoteService } from "services/note";
+import alertContext from "context/alert/alertContext";
+
+import FormButton from "components/FormButton";
 
 export default function NoteForm({ note }) {
 
@@ -48,7 +50,7 @@ export default function NoteForm({ note }) {
             tag: tag.current.value
         };
         const { success, data, errors } = (
-            note === null ? await createNoteAPI(formData) : await updateNoteAPI(note._id, formData)
+            note === null ? await createNoteService(formData) : await updateNoteService(note._id, formData)
         );
         if (success) {
             navigate(`/note/view/${data._id}`);
