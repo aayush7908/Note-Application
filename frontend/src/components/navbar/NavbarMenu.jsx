@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
-import authContext from "../../context/auth/authContext";
-import NavbarMenuItem from "./NavbarMenuItem";
 import { useLocation } from "react-router-dom";
+
+import authContext from "context/auth/authContext";
+
+import NavbarMenuItem from "components/navbar/NavbarMenuItem";
 
 export default function NavbarMenu() {
 

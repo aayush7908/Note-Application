@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AlertContext from "./alertContext";
+import AlertContext from "context/alert/alertContext";
 
 const AlertState = (props) => {
     const [alert, setAlert] = useState(null);

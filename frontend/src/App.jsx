@@ -1,4 +1,3 @@
-import './App.css';
 import React, { useContext, useEffect, useState } from 'react';
 import {
 	BrowserRouter as Router,
@@ -6,26 +5,31 @@ import {
 	Route
 } from "react-router-dom";
 import { LoaderCircle } from 'lucide-react';
-import authContext from './context/auth/authContext';
-import alertContext from './context/alert/alertContext';
-import { authenticateUserAPI } from './utils/api-calls/user'
-import { getToken, removeToken } from './utils/cookie/cookie-utils'
-import Navbar from './components/navbar/Navbar';
-import Alert from './components/Alert';
-import HomePage from './components/home/HomePage';
-import LoginPage from './components/auth/login/LoginPage';
-import RegisterPage from './components/auth/register/RegisterPage';
-import NoteViewPage from './components/note/view/NoteViewPage';
-import NoteEditPage from './components/note/edit/NoteEditPage';
-import NoteCreatePage from './components/note/create/NoteCreatePage';
-import AccountPage from './components/account/AccountPage';
-import LogoutPage from './components/auth/logout/LogoutPage';
-import AdminPage from './components/admin/AdminPage';
-import NotFound from './components/NotFound';
-import ForgotPasswordPage from './components/auth/forgot-password/ForgotPasswordPage';
+
+import './App.css';
+import { authenticateUserService } from 'services/user'
+import authContext from 'context/auth/authContext';
+import alertContext from 'context/alert/alertContext';
+import { getToken, removeToken } from 'utils/cookie'
+
+import HomePage from 'pages/HomePage';
+import LoginPage from 'pages/LoginPage';
+import RegisterPage from 'pages/RegisterPage';
+import ForgotPasswordPage from 'pages/ForgotPasswordPage';
+import NoteCreatePage from 'pages/NoteCreatePage';
+import NoteViewPage from 'pages/NoteViewPage';
+import NoteEditPage from 'pages/NoteEditPage';
+import AccountPage from 'pages/AccountPage';
+import LogoutPage from 'pages/LogoutPage';
+import AdminPage from 'pages/AdminPage';
+import NotFoundPage from 'pages/NotFoundPage';
+
+import Navbar from 'components/navbar/Navbar';
+import Alert from 'components/Alert';
+
 
 function App() {
-
+	
 	const [isAuthenticating, setIsAuthenticating] = useState(false);
 	const { authenticateUser, logoutUser } = useContext(authContext);
 	const { createAlert } = useContext(alertContext);
@@ -36,7 +40,7 @@ function App() {
 				return;
 			}
 			setIsAuthenticating(true);
-			const { success, data, errors } = await authenticateUserAPI();
+			const { success, data, errors } = await authenticateUserService();
 			if (success) {
 				authenticateUser(data);
 			} else {
@@ -70,7 +74,7 @@ function App() {
 								<Route exact path="/note/edit/:id" element={<NoteEditPage />} />
 								<Route exact path="/account" element={<AccountPage />} />
 								<Route exact path="/admin" element={<AdminPage />} />
-								<Route exact path="/*" element={<NotFound />} />
+								<Route exact path="/*" element={<NotFoundPage />} />
 							</Routes>
 						)
 					}

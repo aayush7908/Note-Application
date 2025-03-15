@@ -68,7 +68,7 @@ router.patch('/update/name',
     });
 
 
-// ROUTE: 4 => Delete User: POST '/api/v2/user/delete'
+// ROUTE: 4 => Delete User: DELETE '/api/v2/user/delete'
 router.delete('/delete',
     authenticate,
     body('password', 'Enter a valid password').isStrongPassword(),

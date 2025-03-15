@@ -1,7 +1,7 @@
 # Note Application
 
 ## Description
-This project is a simple Note Making Application created using MERN Stack. The main motive behind developing this project was to learn full-stack web application development using MERN Stack.
+This project is a simple Note Making Application created using __MERN Stack__. The main motive behind developing this project was to learn full-stack web application development using MERN Stack.
 
 This project helped me learn the fundamentals of: 
 - React Hooks
@@ -9,9 +9,10 @@ This project helped me learn the fundamentals of:
 - API Versioning
 - Modular Design of Project
 - Centralized Error Handling
-- Cryptography(Single-Key and Two-Key)
+- JWT Authentication
 - Docker and Containerization
 
+Visit the live app here: https://inotebook-aayush.vercel.app/
 
 ## Installation
 To clone the repository, open git bash in your desired directory and execute the below given command:
@@ -24,16 +25,14 @@ After this, a new directory named `Note-Application` will be created within the 
 Create a `.env` file in that folder with following key-value pairs:
 
 ```
-REACT_APP_API_BASE_URL=http://localhost:5000/api/v1
+REACT_APP_API_BASE_URL=http://localhost:5000/api/v2
 JWT_SECRET=YOUR_JWT_SECRET
 MONGO_URI=mongodb://database/inotebook
-GMAIL_APP_PASSWORD=YOUR_GOOGLE_APP_PASSWORD
-GMAIL_SENDER=EMAIL_ADDRESS_OF_ACCOUNT_LINKED_WITH_ABOVE_APP_PWD
-GMAIL_RECEIVER=EMAIL_ADDRESS_OF_RECEIVER
+GMAIL_APP_PASSWORD=<YOUR_GOOGLE_APP_PASSWORD>
+GMAIL_SENDER=<EMAIL_ADDRESS_OF_ACCOUNT_LINKED_WITH_ABOVE_APP_PWD>
+GMAIL_RECEIVER=<EMAIL_ADDRESS_OF_RECEIVER>
 PORT=5000
 ```
-
-*__NOTE:__ Values indicated by ALL CAPS have to be replaced by your own credentials.*
 
 After `.env` file is ready, use the following docker command to run the application:
 
@@ -43,7 +42,7 @@ docker-compose up --build -d
 
 *___INFO:___ Docker will create three containers, one for each of Frontend, Backend and MongoDB Database. These containers will run in background. If you don't want them to run in background, then remove `-d` flag from docker command*
 
-After this, your application is ready. You can use the application by pasting following code in your browser:
+After this, your application is ready. Visit following URL in your browser:
 
 ```
 http://localhost:3000
@@ -54,41 +53,69 @@ To stop these containers, you can use the command:
 docker-compose down
 ```
 
-<!---
+
+## Project Structure
+```
+.
+├── backend             # express.js backend_
+│   ├── config          # configuration files for mongoDB database_
+│   ├── middleware      # middlewares for request processing_
+│   ├── models          # models for data storage_
+│   ├── routes          # API endpoints_
+│   └── utils           # utility functions used across the application_
+│
+└── frontend            # react.js frontend_
+    └── src
+        ├── assets      # static assets for the application_
+        ├── components  # reusable components_
+        ├── context     # context for global state management_
+        ├── pages       # pages which for specifc routes_
+        ├── services    # service methods to request backend API_
+        └── utils       # utility functions used across the application_
+```
+
+
+## API Endpoints
+### Authentication
+- `POST: /auth/register`: Register a new user
+- `POST: /auth/login`: Login using email and password
+- `POST: /auth/forgot-password/otp/send`: Send OTP to verify email for password reset service
+- `POST: /auth/forgot-password/otp/verify`: Verify OTP for password reset service
+- `POST: /auth/forgot-password/reset-password`: Reset password
+
+### User
+- `GET: /user/authenticate`: Authenticate user using JWT token
+- `GET: /user/get`: Get details of the authenticated user
+- `PATCH: /user/update/name`: Update name of the authenticated user
+- `DELETE: /user/delete`: Delete the authenticated user
+
+### Note
+- `POST: /note/create`: Create note
+- `PUT: /note/update/:id`: Update note by ID
+- `DELETE: /note/delete/:id`: Delete note by ID
+- `GET: /note/get/one/:id`: Get note by ID
+- `GET: /note/get/all`: Get all notes created by the authenticated user
+
+
 ## Features
+### Centralized Error Handler
+- If there is an error in any API, the error is passed to a Centralized Error Handler.
+- Error is checked and if it is found to be critical, an email containing error stack trace is sent to the developer's email address.
 
-1. Centralized Error Handler:
-   - If there is an error in any API, the error is passed to a Centralized Error Handler.
-   - Error is checked and if it is found to be critical, an email containing error stack trace is sent to the developer's email address.
+### Search Functionality
+- Notes can be searched with keywords.
+- Provided keywords will be matched for Title, Content as well as Tags of the Notes.
 
-2. Search Functionality:
-    - Notes can be searched keywords.
-    - Provided keywords will be matched for Title, Content as well as Tags of the Notes.
-    <br />
-    <br />
-    <img src="https://github.com/aayush7908/Note-Application/assets/116342742/4803ba50-f368-4f3c-98cd-ce8aefb96e19" alt="Search Bar GIF" title="Search Bar GIF" width="80%" />
-    <br />
-    <br />
+### Infinite Scroll
+- In one fetch request, only some fixed number of notes are fetched.
+- This helps reducing latency, and thus improves user experience.
+- Focus on the scroll bar to see how new contents are loaded (fetched from Database), as user reaches to end of scroll.
  
-3. Theme Toggler:
-    - Light and Dark Theme Options.
-    - By default, the theme will match user computer's OS default theme.
-    <br />
-    <br />
-    <img src="https://github.com/aayush7908/Note-Application/assets/116342742/a8867503-f19a-44b2-96aa-9b38687b0d0b" alt="Theme Toggler GIF" title="Theme Toggler GIF" width="80%" />
-    <br />
-    <br />
- 
-4. Infinite Scroll:
-    - In one fetch request, only some fixed number of notes are fetched.
-    - This helps reducing latency, and thus improves user experience.
-    - Focus on the scroll bar to see how new contents are loaded (fetched from Database), as user reaches to end of scroll.
-    <br />
-    <br />
-    <img src="https://github.com/aayush7908/Note-Application/assets/116342742/3f7eafb4-097c-43c7-b0c1-868a3a9781bc" alt="Infinite Scroll GIF" title="Infinite Scroll GIF" width="80%" />
-    <br />
-    <br />
- 
-5. Remember Me Option:
-    - While logging in, if the user checks this option, he need not login again for net 30 days. He will be directly logged in.
---->
+### Remember Me Option
+- While logging in, if the user checks this option, he will be remembered for next 7 days.
+
+### Admin Panel
+- Created Admin Panel for user and note management.
+
+### Containerized The Application
+- Used `Docker` to containerize the application.

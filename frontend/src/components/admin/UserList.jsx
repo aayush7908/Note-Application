@@ -1,9 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import alertContext from "../../context/alert/alertContext";
-import { deleteUserAPI, getAllUsersAPI, updateUserAPI } from "../../utils/api-calls/admin";
-import User from "../account/User";
-import DataNotFound from "../DataNotFound";
-import Loader from "../Loader";
+
+import { deleteUserService, getAllUsersService, updateUserService } from "services/admin";
+import alertContext from "context/alert/alertContext";
+
+import User from "components/account/User";
+import DataNotFound from "components/DataNotFound";
+import Loader from "components/Loader";
+
 
 export default function UserList() {
 
@@ -14,7 +17,7 @@ export default function UserList() {
     useEffect(() => {
         (async () => {
             setIsProcessing(true);
-            const { success, data, errors } = await getAllUsersAPI();
+            const { success, data, errors } = await getAllUsersService();
             if (success) {
                 setUsers(data);
             } else {
@@ -42,10 +45,10 @@ export default function UserList() {
                                                     user={user}
                                                     title={`User - ${index + 1}`}
                                                     updateFunc={async (formData) => {
-                                                        return await updateUserAPI(user._id, formData);
+                                                        return await updateUserService(user._id, formData);
                                                     }}
                                                     deleteFunc={async () => {
-                                                        return await deleteUserAPI(user._id);
+                                                        return await deleteUserService(user._id);
                                                     }}
                                                 />
                                             )

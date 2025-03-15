@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
-import Info from "./Info";
-import authContext from "../../context/auth/authContext";
-import NoteInfiniteScroll from "./NoteInfiniteScroll";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
+
+import authContext from "context/auth/authContext";
+
+import Info from "components/home/Info";
+import NoteInfiniteScroll from "components/home/NoteInfiniteScroll";
 
 export default function HomePage() {
 

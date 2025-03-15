@@ -1,10 +1,12 @@
 import React, { useContext, useState } from "react";
-import LinkButton from "../../LinkButton";
-import FormButton from "../../FormButton";
-import { Loader, PencilLine, Trash2 } from "lucide-react";
-import alertContext from "../../../context/alert/alertContext";
-import { deleteNoteAPI } from "../../../utils/api-calls/note";
 import { useNavigate } from "react-router-dom";
+import { Loader, PencilLine, Trash2 } from "lucide-react";
+
+import { deleteNoteService } from "services/note";
+import alertContext from "context/alert/alertContext";
+
+import LinkButton from "components/LinkButton";
+import FormButton from "components/FormButton";
 
 export default function Note({ note }) {
 
@@ -16,7 +18,7 @@ export default function Note({ note }) {
         setIsProcessing(true);
         const isDeleteConfirm = window.confirm("Do you want to delete this Note ?");
         if (isDeleteConfirm) {
-            const { success, errors } = await deleteNoteAPI(note._id);
+            const { success, errors } = await deleteNoteService(note._id);
             if (success) {
                 navigate("/");
                 createAlert("success", "Note Deleted Successfully");

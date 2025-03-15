@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import authContext from "../../context/auth/authContext";
-import alertContext from "../../context/alert/alertContext";
-import UserList from "./UserList";
+
+import authContext from "context/auth/authContext";
+import alertContext from "context/alert/alertContext";
+
+import UserList from "components/admin/UserList";
 
 export default function AdminPage() {
 

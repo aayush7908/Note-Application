@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MenuSquare } from "lucide-react";
-import NavbarMenu from "./NavbarMenu";
+
+import Logo from "assets/images/logo.webp";
+import NavbarMenu from "components/navbar/NavbarMenu";
 
 export default function Navbar() {
 
@@ -16,7 +18,7 @@ export default function Navbar() {
                     className="flex items-center gap-[0.5rem]"
                 >
                     <img
-                        src={"images/logo.png"}
+                        src={Logo}
                         alt="iNotebook"
                         draggable={false}
                         className="h-[2rem]"
